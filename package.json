@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "./node_modules/.bin/parcel src/layouts/*.html --no-cache --out-dir dev",
     "build": "./node_modules/.bin/parcel build src/layouts/*.html --no-cache --out-dir deploy",
-    "start": "./node_modules/.bin/parcel build src/layouts/*.html --no-cache --out-dir deploy && node server.js"
+    "start": "./node_modules/.bin/parcel src/layouts/*.html -p 3000 --no-cache --out-dir dev"
   },
   "keywords": [],
   "author": "Gavrilkov Alexandr <alexgavr89@gmail.com>",

@@ -4,6 +4,9 @@
 - `npm build` — запуск сборки,
 - `npm run start` — запуск express, порт 3000.
 
+## Cсылка на открытый PR
+
+
 ## Прототипы
 [Ссылка на figma.com](https://www.figma.com/file/zka3ZZnxZxKY7pgC7OGpL3/yp_module_1_chat?node-id=0%3A1)
 

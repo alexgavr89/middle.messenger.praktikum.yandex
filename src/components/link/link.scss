@@ -1,0 +1,15 @@
+.link {
+  text-align: center;
+
+  & a {
+    text-decoration: none;
+
+    font-size: 12px;
+    line-height: 12px;
+    color: #3369F3;
+
+    &:hover {
+      color: #D92B4B;
+    }
+  }
+}

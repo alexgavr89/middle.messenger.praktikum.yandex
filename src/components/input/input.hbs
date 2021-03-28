@@ -1,0 +1,7 @@
+{{#each field}}
+    <div class="input">
+        <label class="input__label hidden" for="{{this.id}}">{{this.label}}</label>
+        <input class="input__field" type="{{this.type}}" placeholder="{{this.placeholder}}" autocomplete="off" id="{{id}}">
+        <span class="input__error hidden">{{this.error}}</span>
+    </div>
+{{/each}}

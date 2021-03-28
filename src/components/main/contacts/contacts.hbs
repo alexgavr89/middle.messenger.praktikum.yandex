@@ -1,0 +1,22 @@
+<div class="contacts">
+    <div class="tool__find"></div>
+    <div class="contacts__list">
+        {{#each contact}}
+            <div class="contact {{#if active}}contact-selected{{/if}}">
+                <div class="contact__avatar">
+                    <img src="{{avatar_src}}" alt="Avatar">
+                </div>
+                <div class="contact__info">
+                    <span class="info__name">{{name}}</span>
+                    <span class="info__last-message">{{last_message}}</span>
+                </div>
+                <div class="contact__message-info">
+                    <span>{{message_info}}</span>
+                </div>
+            </div>
+        {{/each}}
+    </div>
+    <div class="tool__add">
+        <i class="fas fa-user-plus"></i>
+    </div>
+</div>

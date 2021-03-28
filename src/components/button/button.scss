@@ -1,0 +1,29 @@
+.btn{
+  padding: 10px 0;
+
+  &__form{
+    padding: 15px 0;
+    width: 100%;
+
+
+    //background: #3369f3;
+    background: #fbd654;
+    //border: 5px solid transparent;
+    border: none;
+    border-radius: 3px;
+
+    font-size: 15px;
+    line-height: 15px;
+    text-align: center;
+    color: #000001;
+
+    &:hover {
+      background: #ffd633;
+      cursor: pointer;
+    }
+
+    &:active {
+      border: none;
+    }
+  }
+}

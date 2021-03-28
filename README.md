@@ -1,8 +1,8 @@
 # Яндекс практикум - модуль 1
 
-- `npm dev` — запуск версии для разработки,
-- `npm build` — запуск сборки,
-- `npm run start` — запуск express, порт 3000.
+- `npm start` — запуск версии для разработки, port 3000
+- `npm build` — запуск сборки.
+- `npm run serve` — запуск express, порт 3000.
 
 ## Cсылка на открытый PR
 [pull request](https://github.com/alexgavr89/middle.messenger.praktikum.yandex/pull/1)

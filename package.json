@@ -4,9 +4,9 @@
   "description": "",
   "main": "",
   "scripts": {
-    "dev": "./node_modules/.bin/parcel src/layouts/*.html --no-cache --out-dir dev",
+    "start": "./node_modules/.bin/parcel src/layouts/*.html -p 3000 --no-cache --out-dir dev",
     "build": "./node_modules/.bin/parcel build src/layouts/*.html --no-cache --out-dir deploy",
-    "start": "./node_modules/.bin/parcel src/layouts/*.html -p 3000 --no-cache --out-dir dev"
+    "serve": "node server.js"
   },
   "keywords": [],
   "author": "Gavrilkov Alexandr <alexgavr89@gmail.com>",

@@ -8,7 +8,7 @@ app.use(express.static(__dirname + '/deploy'));
 app.get('/', (req, res) => {
     res
         .status(200)
-        .sendFile(__dirname + '/deploy/login.html')
+        .sendFile(__dirname + '/deploy/index.html')
 });
 
 app.listen(PORT, function () {

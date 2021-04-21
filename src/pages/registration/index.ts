@@ -279,12 +279,16 @@ export default function view() {
                 href: 'index.html',
                 stylesWrap: ['link'],
             }),
+            events: {
+                click: event => {
+                    event.preventDefault();
+                    location.hash = 'login';
+                }
+            },
             stylesWrap: ['form-block'],
         }),
         stylesWrap: ['app'],
     });
-
-    document.title = 'Регистрация';
 
     render('body', app);
 };

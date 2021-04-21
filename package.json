@@ -5,7 +5,7 @@
   "main": "",
   "scripts": {
     "start": "parcel src/layouts/index.html -p 3000 --no-cache",
-    "build": "parcel build src/layouts/*.html --no-cache --out-dir deploy",
+    "build": "parcel build src/layouts/index.html --no-cache --out-dir deploy",
     "serve": "node server.js",
     "eslint": "eslint . --ext .ts",
     "stylelint": "stylelint '**/*{.css,.scss}'"

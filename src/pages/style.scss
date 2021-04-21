@@ -1,0 +1,41 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@200&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap");
+
+$color-btn-form: #fbd654;
+$color-btn-form-active: #ffd633;
+
+$app-background: #fff;
+$app-shadow: 0 0 6px rgba(0, 0, 0, 0.14);
+
+$color-input-text: #1e1e1e;
+$color-input-label: #999;
+
+$color-active: #3369f3;
+$color-error: #d92b4b;
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+html {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-weight: 500;
+  font-family: "Inter", sans-serif;
+  background: #fdfdfe;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+.active {
+  visibility: visible;
+}

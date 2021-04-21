@@ -1,0 +1,37 @@
+{
+  "name": "yp-module_1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "",
+  "scripts": {
+    "start": "parcel src/layouts/index.html -p 3000 --no-cache",
+    "build": "parcel build src/layouts/index.html --no-cache --out-dir deploy",
+    "serve": "node server.js",
+    "eslint": "eslint . --ext .ts",
+    "stylelint": "stylelint '**/*{.css,.scss}'"
+  },
+  "keywords": [],
+  "author": "Gavrilkov Alexandr <alexgavr89@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "@fortawesome/fontawesome-free": "^5.15.3",
+    "@types/node": "^14.14.41",
+    "@typescript-eslint/eslint-plugin": "^4.22.0",
+    "@typescript-eslint/parser": "^4.22.0",
+    "buffer": "^4.9.2",
+    "eslint": "^7.24.0",
+    "express": "^4.17.1",
+    "handlebars": "^4.7.7",
+    "parcel-bundler": "^1.12.5",
+    "prettier": "^2.2.1",
+    "sass": "^1.32.8",
+    "stylelint": "^13.12.0",
+    "stylelint-config-prettier": "^8.0.2",
+    "stylelint-config-rational-order": "^0.1.2",
+    "stylelint-config-standard": "^21.0.0",
+    "stylelint-order": "^4.1.0",
+    "stylelint-prettier": "^1.2.0",
+    "stylelint-scss": "^3.19.0",
+    "typescript": "^4.2.4"
+  }
+}

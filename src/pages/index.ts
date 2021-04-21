@@ -1,5 +1,5 @@
-import Router from "../router";
+import router from "../router";
 
-const pages = document.location.pathname.slice(1);
-const router = new Router();
-router.init(pages);
+const pages = document.location.hash.slice(1);
+
+router();

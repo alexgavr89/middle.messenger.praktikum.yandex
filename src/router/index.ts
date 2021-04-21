@@ -1,19 +1,25 @@
 import AuthController from '../controllers/AuthController';
 
-export default class Router {
-    private authController;
+function route() {
+    const hash = location.hash.slice(1);
 
-    constructor() {
-        this.authController = new AuthController();
+    const authController = new AuthController();
+
+    console.log(hash);
+    if (hash !== '') {
+        document.querySelector('.app').remove();
     }
 
-    init(page: string) {
-        if (page === 'index.html') {
-            this.authController.login();
-        }
-
-        if (page === 'registration.html') {
-            this.authController.registration();
-        }
+    if (hash === 'login' || hash === '') {
+        authController.login();
     }
+
+    if (hash === 'registration') {
+        authController.registration();
+    }
+}
+
+export default function () {
+    addEventListener('hashchange', route);
+    route();
 }

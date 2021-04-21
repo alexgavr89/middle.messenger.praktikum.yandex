@@ -130,13 +130,17 @@ export default function view() {
                 title: 'Нет аккаунта?',
                 href: 'registration.html',
                 stylesWrap: ['link'],
+                events: {
+                    click: event => {
+                        event.preventDefault();
+                        location.hash = 'registration';
+                    }
+                }
             }),
             stylesWrap: ['form-block'],
         }),
         stylesWrap: ['app'],
     });
-
-    document.title = 'Вход';
 
     render('body', app);
 }

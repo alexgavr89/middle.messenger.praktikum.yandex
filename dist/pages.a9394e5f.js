@@ -11299,13 +11299,18 @@ function view() {
       link: new link_1.default({
         title: 'Нет аккаунта?',
         href: 'registration.html',
-        stylesWrap: ['link']
+        stylesWrap: ['link'],
+        events: {
+          click: function click(event) {
+            event.preventDefault();
+            location.hash = 'registration';
+          }
+        }
       }),
       stylesWrap: ['form-block']
     }),
     stylesWrap: ['app']
   });
-  document.title = 'Вход';
   render_dom_1.render('body', app);
 }
 
@@ -11684,11 +11689,16 @@ function view() {
         href: 'index.html',
         stylesWrap: ['link']
       }),
+      events: {
+        click: function click(event) {
+          event.preventDefault();
+          location.hash = 'login';
+        }
+      },
       stylesWrap: ['form-block']
     }),
     stylesWrap: ['app']
   });
-  document.title = 'Регистрация';
   render_dom_1.render('body', app);
 }
 
@@ -11746,27 +11756,30 @@ Object.defineProperty(exports, "__esModule", {
 
 var AuthController_1 = __importDefault(require("../controllers/AuthController"));
 
-var Router =
-/** @class */
-function () {
-  function Router() {
-    this.authController = new AuthController_1.default();
+function route() {
+  var hash = location.hash.slice(1);
+  var authController = new AuthController_1.default();
+  console.log(hash);
+
+  if (hash !== '') {
+    document.querySelector('.app').remove();
   }
 
-  Router.prototype.init = function (page) {
-    if (page === 'index.html') {
-      this.authController.login();
-    }
+  if (hash === 'login' || hash === '') {
+    authController.login();
+  }
 
-    if (page === 'registration.html') {
-      this.authController.registration();
-    }
-  };
+  if (hash === 'registration') {
+    authController.registration();
+  }
+}
 
-  return Router;
-}();
+function default_1() {
+  addEventListener('hashchange', route);
+  route();
+}
 
-exports.default = Router;
+exports.default = default_1;
 },{"../controllers/AuthController":"../controllers/AuthController.ts"}],"../pages/index.ts":[function(require,module,exports) {
 "use strict";
 
@@ -11782,9 +11795,8 @@ Object.defineProperty(exports, "__esModule", {
 
 var router_1 = __importDefault(require("../router"));
 
-var pages = document.location.pathname.slice(1);
-var router = new router_1.default();
-router.init(pages);
+var pages = document.location.hash.slice(1);
+router_1.default();
 },{"../router":"../router/index.ts"}],"../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -11813,7 +11825,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "44553" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "39969" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

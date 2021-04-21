@@ -15,7 +15,6 @@
 ## Netlify
 
 [Форма входа](https://yp-module-1-alexgavr89.netlify.app/)  
-[Форма регистрации](https://yp-module-1-alexgavr89.netlify.app/registration.html)  
 Страница чата  
 Страница ошибки 404 - в работе  
 Страница ошибки 500 - в работе  

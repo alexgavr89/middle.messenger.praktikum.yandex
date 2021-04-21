@@ -277,14 +277,14 @@ export default function view() {
             link: new Link({
                 title: 'Войти',
                 href: 'index.html',
+                events: {
+                    click: event => {
+                        event.preventDefault();
+                        location.hash = 'login';
+                    }
+                },
                 stylesWrap: ['link'],
             }),
-            events: {
-                click: event => {
-                    event.preventDefault();
-                    location.hash = 'login';
-                }
-            },
             stylesWrap: ['form-block'],
         }),
         stylesWrap: ['app'],

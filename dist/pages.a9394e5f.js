@@ -11687,14 +11687,14 @@ function view() {
       link: new link_1.default({
         title: 'Войти',
         href: 'index.html',
+        events: {
+          click: function click(event) {
+            event.preventDefault();
+            location.hash = 'login';
+          }
+        },
         stylesWrap: ['link']
       }),
-      events: {
-        click: function click(event) {
-          event.preventDefault();
-          location.hash = 'login';
-        }
-      },
       stylesWrap: ['form-block']
     }),
     stylesWrap: ['app']
@@ -11757,12 +11757,12 @@ Object.defineProperty(exports, "__esModule", {
 var AuthController_1 = __importDefault(require("../controllers/AuthController"));
 
 function route() {
-  var hash = location.hash.slice(1);
+  var hash = document.location.hash.slice(1);
   var authController = new AuthController_1.default();
-  console.log(hash);
+  var app = document.querySelector('.app');
 
-  if (hash !== '') {
-    document.querySelector('.app').remove();
+  if (hash !== '' && app !== null) {
+    app.remove();
   }
 
   if (hash === 'login' || hash === '') {
@@ -11795,7 +11795,6 @@ Object.defineProperty(exports, "__esModule", {
 
 var router_1 = __importDefault(require("../router"));
 
-var pages = document.location.hash.slice(1);
 router_1.default();
 },{"../router":"../router/index.ts"}],"../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
@@ -11825,7 +11824,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "39969" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "34463" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

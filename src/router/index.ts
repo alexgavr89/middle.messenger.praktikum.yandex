@@ -1,13 +1,14 @@
 import AuthController from '../controllers/AuthController';
 
 function route() {
-    const hash = location.hash.slice(1);
+    const hash = document.location.hash.slice(1);
 
     const authController = new AuthController();
 
-    console.log(hash);
-    if (hash !== '') {
-        document.querySelector('.app').remove();
+    const app = document.querySelector('.app');
+
+    if (hash !== '' && app !== null) {
+        app.remove();
     }
 
     if (hash === 'login' || hash === '') {

@@ -7,7 +7,7 @@
 - `npm run stylelint` — запуск stylelint.
 
 ## Cсылка на открытый PR
-[pull request]()
+[pull request](https://github.com/alexgavr89/middle.messenger.praktikum.yandex/pull/2)
 
 ## Прототипы
 [Ссылка на figma.com](https://www.figma.com/file/zka3ZZnxZxKY7pgC7OGpL3/yp_module_1_chat?node-id=0%3A1)

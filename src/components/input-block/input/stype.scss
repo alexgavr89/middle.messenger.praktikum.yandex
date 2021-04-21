@@ -1,0 +1,26 @@
+@import "src/pages/style";
+
+input {
+  display: block;
+  width: 100%;
+  padding: 5px 0;
+  color: $color-input-text;
+  font-size: 13px;
+  line-height: 13px;
+  border: none;
+  border-bottom: 1px solid $color-input-label;
+
+  &:focus {
+    border-bottom: 1px solid $color-active;
+    outline: 0;
+    outline-offset: 0;
+  }
+
+  &:focus::-webkit-input-placeholder {
+    color: transparent;
+  }
+
+  &:hover {
+    border-bottom: 1px solid $color-active;
+  }
+}

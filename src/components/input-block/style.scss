@@ -1,0 +1,20 @@
+@import "src/pages/style";
+
+.input-block {
+  padding: 10px 0;
+
+  &__label {
+    display: block;
+    color: $color-input-label;
+    font-size: 10px;
+    line-height: 10px;
+  }
+
+  &__error {
+    display: block;
+    padding: 5px 0;
+    color: $color-error;
+    font-size: 10px;
+    line-height: 10px;
+  }
+}

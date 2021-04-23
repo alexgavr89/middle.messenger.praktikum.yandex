@@ -5,6 +5,8 @@ module.exports = {
     plugins: ["stylelint-order", "stylelint-scss"],
     rules: {},
     ignoreFiles: [
+        "./node_modules/*",
+        "./deploy/*",
         "./dist/*",
     ]
 };

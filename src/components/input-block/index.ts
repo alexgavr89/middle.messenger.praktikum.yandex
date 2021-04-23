@@ -2,8 +2,8 @@ import Block from '../../modules/block';
 
 import './style.scss';
 
-export default class InputBlock extends Block {
-    constructor(props) {
+export default class InputBlock<L, I, Er, E> extends Block {
+    constructor(props: { label: L; input: I, error: Er; stylesWrap?: string[]; events?: E; }) {
         super('div', props);
     }
 

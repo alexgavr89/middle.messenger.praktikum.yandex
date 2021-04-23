@@ -3,7 +3,7 @@ interface IEventBus {
 
     off(event: string, callback: () => void): void;
 
-    emit(event: string, ...args: any[]): void;
+    emit<T>(event: string, ...args: T[]): void;
 }
 
 export default class EventBus implements IEventBus {
@@ -27,7 +27,7 @@ export default class EventBus implements IEventBus {
         );
     }
 
-    emit(event: string, ...args: any[]): void {
+    emit<T>(event: string, ...args: T[]): void {
         if (!this.listeners[event]) {
             throw new Error(`Нет события: ${event}`);
         }

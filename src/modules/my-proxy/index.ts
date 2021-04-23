@@ -1,6 +1,6 @@
 const MyProxy = Proxy;
 
-export default function makeProxyProps(target) {
+export default function makeProxyProps<T>(target: T): ProxyHandler<T> {
     return new MyProxy(target, {
         get(target, prop) {
             const value = target[prop];

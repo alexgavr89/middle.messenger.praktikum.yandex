@@ -8,9 +8,10 @@ import App from '../../components/app';
 import FormRegistration from '../../components/form-registration';
 import Button from '../../components/button';
 import Link from '../../components/link';
-import validator from '../../utils/validator';
+import isValid from '../../utils/validator';
+import ROUT from '../../router/routes';
 
-export default function view() {
+export default function view(): void {
     const nameLabel = new InputLabel({
         id: 'text',
         label: 'Имя',
@@ -20,7 +21,7 @@ export default function view() {
         type: 'text',
         placeholder: 'Имя',
         events: {
-            focus: event => {
+            focus: () => {
                 nameLabel.show();
             },
             blur: event => {
@@ -28,16 +29,14 @@ export default function view() {
                     nameLabel.hide();
                 }
 
-                if (validator('filled', event.target.value)) {
+                if (!isValid('filled', event.target.value)) {
                     nameError.show();
                 } else {
                     nameError.hide();
                 }
             }
         },
-        setting: {
-            wrapStyle: ['input-block'],
-        },
+        stylesWrap: ['input-block'],
     });
     const nameError = new InputError({
         error: 'Пожалуйста, укажите имя',
@@ -58,7 +57,7 @@ export default function view() {
         type: 'text',
         placeholder: 'Фамилия',
         events: {
-            focus: event => {
+            focus: () => {
                 lastnameLabel.show();
             },
             blur: event => {
@@ -66,16 +65,14 @@ export default function view() {
                     lastnameLabel.hide();
                 }
 
-                if (validator('filled', event.target.value)) {
+                if (!isValid('filled', event.target.value)) {
                     lastnameError.show();
                 } else {
                     lastnameError.hide();
                 }
             }
         },
-        setting: {
-            wrapStyle: ['input-block'],
-        },
+        stylesWrap: ['input-block'],
     });
     const lastnameError = new InputError({
         error: 'Пожалуйста, укажите фамилию',
@@ -96,7 +93,7 @@ export default function view() {
         type: 'text',
         placeholder: 'Логин',
         events: {
-            focus: event => {
+            focus: () => {
                 mailLabel.show();
             },
             blur: event => {
@@ -104,16 +101,14 @@ export default function view() {
                     mailLabel.hide();
                 }
 
-                if (validator('email', event.target.value)) {
+                if (isValid('email', event.target.value)) {
                     mailError.show();
                 } else {
                     mailError.hide();
                 }
             }
         },
-        setting: {
-            wrapStyle: ['input-block'],
-        },
+        stylesWrap: ['input-block'],
     });
     const mailError = new InputError({
         error: 'Пожалуйста, укажите почту',
@@ -134,7 +129,7 @@ export default function view() {
         type: 'password',
         placeholder: 'Пароль',
         events: {
-            focus: event => {
+            focus: () => {
                 passwordLabel.show();
             },
             blur: event => {
@@ -142,7 +137,7 @@ export default function view() {
                     passwordLabel.hide();
                 }
 
-                if (validator('password', event.target.value)) {
+                if (isValid('password', event.target.value)) {
                     passwordError.show();
                 } else {
                     passwordError.hide();
@@ -169,7 +164,7 @@ export default function view() {
         type: 'password',
         placeholder: 'Повторите пароль',
         events: {
-            focus: event => {
+            focus: () => {
                 confirmPasswordLabel.show();
             },
             blur: event => {
@@ -180,7 +175,7 @@ export default function view() {
                 const password = document.querySelector('#password');
 
                 if (
-                    validator('password', event.target.value) ||
+                    isValid('password', event.target.value) ||
                     event.target.value !== password.value
                 ) {
                     confirmPasswordError.show();
@@ -225,12 +220,12 @@ export default function view() {
                         const password = event.target.elements.password.value;
                         const confirmPassword = event.target.elements.confirmPassword.value;
 
-                        const checkName = validator('filled', name);
-                        const checkLastname = validator('filled', lastname);
-                        const checkMail = validator('email', mail);
-                        const checkPassword = validator('password', password);
+                        const checkName = isValid('filled', name);
+                        const checkLastname = isValid('filled', lastname);
+                        const checkMail = isValid('email', mail);
+                        const checkPassword = isValid('password', password);
 
-                        const checkConfirmPassword = validator('password', confirmPassword) || password !== confirmPassword;
+                        const checkConfirmPassword = isValid('password', confirmPassword) || password !== confirmPassword;
 
                         if (
                             !checkName &&
@@ -241,13 +236,13 @@ export default function view() {
                         ) {
                             console.log('Отправить форму');
                         } else {
-                            if (checkName) {
+                            if (!checkName) {
                                 nameError.show();
                             } else {
                                 nameError.hide()
                             }
 
-                            if (checkLastname) {
+                            if (!checkLastname) {
                                 lastnameError.show();
                             } else {
                                 lastnameError.hide()
@@ -280,7 +275,7 @@ export default function view() {
                 events: {
                     click: event => {
                         event.preventDefault();
-                        location.hash = 'login';
+                        location.hash = ROUT.LOGIN;
                     }
                 },
                 stylesWrap: ['link'],
@@ -291,4 +286,4 @@ export default function view() {
     });
 
     render('body', app);
-};
+}

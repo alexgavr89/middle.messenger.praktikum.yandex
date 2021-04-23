@@ -20,7 +20,7 @@ function route() {
     }
 }
 
-export default function () {
+export default function (): void {
     addEventListener('hashchange', route);
     route();
 }

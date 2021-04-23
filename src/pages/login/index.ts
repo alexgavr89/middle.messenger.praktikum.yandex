@@ -8,9 +8,10 @@ import App from '../../components/app';
 import FormLogin from '../../components/form-login';
 import Button from '../../components/button';
 import Link from '../../components/link';
-import validator from '../../utils/validator';
+import isValid from '../../utils/validator';
+import ROUT from '../../router/routes';
 
-export default function view() {
+export default function view(): void {
     const mailLabel = new InputLabel({
         id: 'mail',
         label: 'Почта',
@@ -20,7 +21,7 @@ export default function view() {
         type: 'text',
         placeholder: 'Логин',
         events: {
-            focus: event => {
+            focus: () => {
                 mailLabel.show();
             },
             blur: event => {
@@ -28,16 +29,14 @@ export default function view() {
                     mailLabel.hide();
                 }
 
-                if (validator('email', event.target.value)) {
+                if (isValid('email', event.target.value)) {
                     mailError.show();
                 } else {
                     mailError.hide();
                 }
             }
         },
-        setting: {
-            wrapStyle: ['input-block'],
-        },
+        stylesWrap: ['input-block']
     });
     const mailError = new InputError({
         error: 'Пожалуйста, укажите почту',
@@ -59,7 +58,7 @@ export default function view() {
         type: 'password',
         placeholder: 'Пароль',
         events: {
-            focus: event => {
+            focus: () => {
                 passwordLabel.show();
             },
             blur: event => {
@@ -67,7 +66,7 @@ export default function view() {
                     passwordLabel.hide();
                 }
 
-                if (validator('password', event.target.value)) {
+                if (isValid('password', event.target.value)) {
                     passwordError.show();
                 } else {
                     passwordError.hide();
@@ -105,8 +104,8 @@ export default function view() {
                         const mail = event.target.elements.mail.value;
                         const password = event.target.elements.password.value;
 
-                        const checkMail = validator('email', mail);
-                        const checkPassword = validator('password', password);
+                        const checkMail = isValid('email', mail);
+                        const checkPassword = isValid('password', password);
 
                         if (!checkMail && !checkPassword) {
                             console.log('Отправить форму');
@@ -133,7 +132,7 @@ export default function view() {
                 events: {
                     click: event => {
                         event.preventDefault();
-                        location.hash = 'registration';
+                        location.hash = ROUT.REGISTRATION;
                     }
                 }
             }),

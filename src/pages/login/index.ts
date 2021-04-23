@@ -29,7 +29,7 @@ export default function view(): void {
                     mailLabel.hide();
                 }
 
-                if (isValid('email', event.target.value)) {
+                if (!isValid('email', event.target.value)) {
                     mailError.show();
                 } else {
                     mailError.hide();
@@ -66,7 +66,7 @@ export default function view(): void {
                     passwordLabel.hide();
                 }
 
-                if (isValid('password', event.target.value)) {
+                if (!isValid('password', event.target.value)) {
                     passwordError.show();
                 } else {
                     passwordError.hide();
@@ -107,16 +107,16 @@ export default function view(): void {
                         const checkMail = isValid('email', mail);
                         const checkPassword = isValid('password', password);
 
-                        if (!checkMail && !checkPassword) {
+                        if (checkMail && checkPassword) {
                             console.log('Отправить форму');
                         } else {
-                            if (checkMail) {
+                            if (!checkMail) {
                                 mailError.show();
                             } else {
                                 mailError.hide()
                             }
 
-                            if (checkPassword) {
+                            if (!checkPassword) {
                                 passwordError.show();
                             } else {
                                 passwordError.hide();

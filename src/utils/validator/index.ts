@@ -1,4 +1,4 @@
-export default function isValid(type: string | undefined, value: string): boolean {
+export default function isValid(type: string, value: string): boolean {
     if (type === 'email') {
         return isEmail(value);
     }
@@ -10,12 +10,10 @@ export default function isValid(type: string | undefined, value: string): boolea
     if (type === 'password') {
         return isPassword(value);
     }
-
-    return true;
 }
 
 function isEmail(value: string): boolean {
-    return !value.match(/^[A-Z0-9._%+-]+@[A-Z0-9-]+.+.[A-Z]{2,4}$/i);
+    return !!value.match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
 }
 
 function isFilled(value: string): boolean {
@@ -23,5 +21,5 @@ function isFilled(value: string): boolean {
 }
 
 function isPassword(value: string): boolean {
-    return value.length < 6;
+    return value.length >= 6;
 }

@@ -101,7 +101,7 @@ export default function view(): void {
                     mailLabel.hide();
                 }
 
-                if (isValid('email', event.target.value)) {
+                if (!isValid('email', event.target.value)) {
                     mailError.show();
                 } else {
                     mailError.hide();
@@ -137,7 +137,7 @@ export default function view(): void {
                     passwordLabel.hide();
                 }
 
-                if (isValid('password', event.target.value)) {
+                if (!isValid('password', event.target.value)) {
                     passwordError.show();
                 } else {
                     passwordError.hide();
@@ -175,7 +175,7 @@ export default function view(): void {
                 const password = document.querySelector('#password');
 
                 if (
-                    isValid('password', event.target.value) ||
+                    !isValid('password', event.target.value) ||
                     event.target.value !== password.value
                 ) {
                     confirmPasswordError.show();
@@ -225,14 +225,14 @@ export default function view(): void {
                         const checkMail = isValid('email', mail);
                         const checkPassword = isValid('password', password);
 
-                        const checkConfirmPassword = isValid('password', confirmPassword) || password !== confirmPassword;
+                        const checkConfirmPassword = isValid('password', confirmPassword) && password === confirmPassword;
 
                         if (
-                            !checkName &&
-                            !checkLastname &&
-                            !checkMail &&
-                            !checkPassword &&
-                            !checkConfirmPassword
+                            checkName &&
+                            checkLastname &&
+                            checkMail &&
+                            checkPassword &&
+                            checkConfirmPassword
                         ) {
                             console.log('Отправить форму');
                         } else {
@@ -248,19 +248,19 @@ export default function view(): void {
                                 lastnameError.hide()
                             }
 
-                            if (checkMail) {
+                            if (!checkMail) {
                                 mailError.show();
                             } else {
                                 mailError.hide()
                             }
 
-                            if (checkPassword) {
+                            if (!checkPassword) {
                                 passwordError.show();
                             } else {
                                 passwordError.hide();
                             }
 
-                            if (checkConfirmPassword) {
+                            if (!checkConfirmPassword) {
                                 confirmPasswordError.show();
                             } else {
                                 confirmPasswordError.hide();

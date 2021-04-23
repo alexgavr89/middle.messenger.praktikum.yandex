@@ -4,5 +4,9 @@
   "noUnusedParameters": true,
   "sourceMap": true,
   "strictNullChecks": true,
-  "exclude": []
+  "exclude": [
+    "node_modules",
+    "deploy",
+    "dist"
+  ]
 }

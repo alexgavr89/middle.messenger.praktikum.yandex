@@ -2,15 +2,15 @@ import loginPage from '../pages/login';
 import registrationPage from '../pages/registration';
 
 export default class AuthController {
-    login() {
+    login(): void {
         // вызов модели
 
         loginPage();
     }
 
-    registration() {
+    registration(): void {
         // вызов модели
 
         registrationPage();
     }
-};
+}

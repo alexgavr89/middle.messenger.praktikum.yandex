@@ -1,21 +1,20 @@
 import EventBus from '../event-bus';
 import makeProxyProps from '../my-proxy';
 
-export default abstract class Block {
+enum EVENTS {
+    INIT = 'init',
+    FLOW_CDM = 'flow:component-did-mount',
+    FLOW_RENDER =  'flow:render',
+    FLOW_CDU =  'flow:component-did-update',
+}
 
-    readonly EVENTS = {
-        INIT: 'init',
-        FLOW_CDM: 'flow:component-did-mount',
-        FLOW_RENDER: 'flow:render',
-        FLOW_CDU: 'flow:component-did-update',
-    }
-
+export default abstract class Block<T> {
     protected meta;
     protected element: HTMLElement;
     props;
     protected eventBus: () => EventBus;
 
-    protected constructor(tagName = 'div', props = {}) {
+    protected constructor(tagName = 'div', props: T) {
         this.meta = {
             tagName,
             props,
@@ -28,20 +27,20 @@ export default abstract class Block {
 
         this.registerEvents(eventBus);
 
-        eventBus.emit(this.EVENTS.INIT);
+        eventBus.emit(EVENTS.INIT);
     }
 
     private registerEvents(eventBus: EventBus): void {
-        eventBus.on(this.EVENTS.INIT, this.init.bind(this));
-        eventBus.on(this.EVENTS.FLOW_CDM, this.componentDidMount.bind(this));
-        eventBus.on(this.EVENTS.FLOW_RENDER, this.render.bind(this));
-        eventBus.on(this.EVENTS.FLOW_CDU, this.componentDidUpdate.bind(this));
+        eventBus.on(EVENTS.INIT, this.init.bind(this));
+        eventBus.on(EVENTS.FLOW_CDM, this.componentDidMount.bind(this));
+        eventBus.on(EVENTS.FLOW_RENDER, this.render.bind(this));
+        eventBus.on(EVENTS.FLOW_CDU, this.componentDidUpdate.bind(this));
     }
 
     private init(): void {
         this.createResources();
 
-        this.eventBus().emit(this.EVENTS.FLOW_CDM);
+        this.eventBus().emit(EVENTS.FLOW_CDM);
     }
 
     private createResources(): void {
@@ -56,7 +55,7 @@ export default abstract class Block {
 
     private componentDidMount() {
         this.mounted();
-        this.eventBus().emit(this.EVENTS.FLOW_RENDER);
+        this.eventBus().emit(EVENTS.FLOW_RENDER);
     }
 
     abstract mounted(): void;
@@ -66,7 +65,7 @@ export default abstract class Block {
 
         this.addEvents();
 
-        this.eventBus().emit(this.EVENTS.FLOW_CDU);
+        this.eventBus().emit(EVENTS.FLOW_CDU);
     }
 
     abstract compile(): string;
@@ -95,12 +94,12 @@ export default abstract class Block {
         });
     }
 
-    setProps(nextProps): void {
+    setProps<T>(nextProps: T): void {
         this.removeEvents();
 
         Object.assign(this.props, nextProps);
 
-        this.eventBus().emit(this.EVENTS.FLOW_RENDER);
+        this.eventBus().emit(EVENTS.FLOW_RENDER);
     }
 
     private removeEvents() {

@@ -1,4 +1,4 @@
-export default function validator(type: string | undefined, value: string): boolean {
+export default function isValid(type: string | undefined, value: string): boolean {
     if (type === 'email') {
         return isEmail(value);
     }
@@ -19,7 +19,7 @@ function isEmail(value: string): boolean {
 }
 
 function isFilled(value: string): boolean {
-    return value.length === 0;
+    return value.length > 0;
 }
 
 function isPassword(value: string): boolean {

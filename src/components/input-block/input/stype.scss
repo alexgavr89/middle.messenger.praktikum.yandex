@@ -19,8 +19,4 @@ input {
   &:focus::-webkit-input-placeholder {
     color: transparent;
   }
-
-  &:hover {
-    border-bottom: 1px solid $color-active;
-  }
 }

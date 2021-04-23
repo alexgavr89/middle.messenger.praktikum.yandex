@@ -1,15 +1,14 @@
+import {readFileSync} from 'fs';
 import Handlebars from 'handlebars';
 import Block from '../../modules/block';
 
-const fs = require('fs');
-
-export default class FormRegistration extends Block {
-    constructor(props) {
+export default class FormRegistration<I, B, E> extends Block {
+    constructor(props: { name: I; lastname: I; mail: I; password: I; confirmPassword: I; button: B; stylesWrap?: string[]; events?: E; }) {
         super('div', props);
     }
 
     compile(): string {
-        const tmpl = fs.readFileSync('./src/components/form-login/tmpl.hbs', 'utf8');
+        const tmpl = readFileSync('./src/components/form-login/tmpl.hbs', 'utf8');
         const formRegistration = Handlebars.compile(tmpl);
 
         return formRegistration(this.props);

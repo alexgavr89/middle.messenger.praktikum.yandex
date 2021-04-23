@@ -1,15 +1,14 @@
+import {readFileSync} from 'fs';
 import Handlebars from 'handlebars';
 import Block from '../../../modules/block';
 
-const fs = require('fs');
-
 export default class InputError extends Block {
-    constructor(props) {
+    constructor(props: { error: string; }) {
         super('div', props);
     }
 
     compile(): string {
-        const tmpl = fs.readFileSync('./src/components/input-block/input-error/tmpl.hbs', 'utf8');
+        const tmpl = readFileSync('./src/components/input-block/input-error/tmpl.hbs', 'utf8');
         const inputError = Handlebars.compile(tmpl);
 
         return inputError(this.props);

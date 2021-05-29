@@ -1,0 +1,22 @@
+@import 'src/pages/style.scss';
+
+.change-block {
+  position: absolute;
+  display: flex;
+  width: 907px;
+  height: 450px;
+  margin-top: 1px;
+  margin-left: 1px;
+  padding: 10px;
+  background-color: $contact-active;
+  opacity: 50;
+
+  input {
+    background-color: $color-settingblock;
+  }
+}
+
+.change-form {
+  width: 280px;
+  padding: 10px;
+}

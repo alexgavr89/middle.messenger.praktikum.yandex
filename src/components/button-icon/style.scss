@@ -1,0 +1,13 @@
+@import 'src/pages/style';
+
+.button-icon {
+  & i {
+    padding: 10px;
+    color: $color-btn-icon;
+    font-size: 22px;
+
+    &:hover {
+      color: $color-active;
+    }
+  }
+}

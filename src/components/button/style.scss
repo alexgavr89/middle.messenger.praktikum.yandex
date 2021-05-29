@@ -1,0 +1,25 @@
+@import 'src/pages/style';
+
+.btn {
+  padding: 10px 0;
+
+  &__form {
+    width: 100%;
+    padding: 15px 0;
+    font-size: 15px;
+    line-height: 15px;
+    text-align: center;
+    background: $color-btn-form;
+    border: none;
+    border-radius: 3px;
+
+    &:hover {
+      background: $color-btn-form-active;
+      cursor: pointer;
+    }
+
+    &:active {
+      border: none;
+    }
+  }
+}

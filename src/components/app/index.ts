@@ -1,21 +1,17 @@
-import Block from '../../modules/block';
+import { Block, Props } from '../../modules/block';
 
 import './style.scss';
 
-export default class App<A, E> extends Block {
-    constructor(props: { app: A; stylesWrap?: string[]; events?: E}) {
-        super('div', props);
-    }
+interface IAppProps extends Props {
+  app: unknown;
+}
 
-    compile(): string {
-        return '';
-    }
+export default class App extends Block {
+  constructor(props: IAppProps) {
+    super('div', props);
+  }
 
-    mounted(): void {
-        return;
-    }
-
-    update(): void {
-        this.element.appendChild(this.props.app.getContent());
-    }
+  protected update(): void {
+    this.element.appendChild(this.props.app.getContent());
+  }
 }

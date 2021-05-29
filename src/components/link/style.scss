@@ -1,0 +1,17 @@
+@import 'src/pages/style';
+
+.link {
+  text-align: center;
+
+  & a {
+    color: $color-active;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 12px;
+    text-decoration: none;
+
+    &:hover {
+      color: $color-error;
+    }
+  }
+}

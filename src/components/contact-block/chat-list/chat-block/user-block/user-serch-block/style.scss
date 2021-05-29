@@ -1,0 +1,9 @@
+@import 'src/pages/style';
+
+.user-search-block {
+  border-bottom: solid 1px $color-border;
+
+  .input-block {
+    padding-left: 10px;
+  }
+}

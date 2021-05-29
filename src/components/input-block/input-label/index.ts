@@ -1,24 +1,24 @@
-import {readFileSync} from 'fs';
+import { readFileSync } from 'fs';
 import Handlebars from 'handlebars';
-import Block from '../../../modules/block';
+import { Block, Props } from '../../../modules/block';
 
-export default class InputLabel extends Block {
-    constructor(props: { id: string; label: string; }) {
-        super('div', props);
-    }
+export interface IInputLabelProps extends Props {
+  id: string;
+  label: string;
+}
 
-    compile(): string {
-        const tmpl = readFileSync('./src/components/input-block/input-label/tmpl.hbs', 'utf8');
-        const input = Handlebars.compile(tmpl);
+export class InputLabel extends Block {
+  constructor(props: IInputLabelProps) {
+    super('div', props);
+  }
 
-        return input(this.props);
-    }
+  compile(): string {
+    const tmpl = readFileSync(
+      './src/components/input-block/input-label/tmpl.hbs',
+      'utf8',
+    );
+    const input = Handlebars.compile(tmpl);
 
-    mounted(): void {
-        this.hide();
-    }
-
-    update(): void {
-        return;
-    }
+    return input(this.props);
+  }
 }

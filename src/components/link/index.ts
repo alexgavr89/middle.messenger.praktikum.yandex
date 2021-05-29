@@ -1,26 +1,23 @@
-import {readFileSync} from 'fs';
+import { readFileSync } from 'fs';
 import Handlebars from 'handlebars';
-import Block from "../../modules/block";
+import { Block, Props } from '../../modules/block';
 
 import './style.scss';
 
-export default class Link<E> extends Block {
-    constructor(props: { title: string; href: string;  stylesWrap?: string[]; events?: E; }) {
-        super('div', props);
-    }
+interface LinkProps extends Props {
+  title: string;
+  href: string;
+}
 
-    compile(): string {
-        const tmpl = readFileSync('./src/components/link/tmpl.hbs', 'utf8');
-        const button = Handlebars.compile(tmpl);
+export default class Link extends Block {
+  constructor(props: LinkProps) {
+    super('div', { ...props, stylesWrap: ['link'] });
+  }
 
-        return button(this.props);
-    }
+  compile(): string {
+    const tmpl = readFileSync('./src/components/link/tmpl.hbs', 'utf8');
+    const button = Handlebars.compile(tmpl);
 
-    mounted(): void {
-        return;
-    }
-
-    update(): void {
-        return;
-    }
+    return button(this.props);
+  }
 }

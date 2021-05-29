@@ -13,8 +13,7 @@
 [Ссылка на figma.com](https://www.figma.com/file/zka3ZZnxZxKY7pgC7OGpL3/yp_module_1_chat?node-id=0%3A1)
 
 ## Netlify
-
 [Форма входа](https://yp-module-1-alexgavr89.netlify.app/)  
-Страница чата  
+Страница чата - в работе
 Страница ошибки 404 - в работе  
 Страница ошибки 500 - в работе  

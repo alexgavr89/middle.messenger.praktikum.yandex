@@ -6,10 +6,16 @@ const router = Router.getInstance();
 
 export default class LogoutController {
   static logout(): void {
-    AuthAPI.logout().then((result) => {
-      if (result.status === 200) {
-        router.go('/login');
-      }
-    });
+    AuthAPI.logout()
+      .then((result) => {
+        if (result.status === 200) {
+          router.go('/login');
+        }
+
+        return true;
+      })
+      .catch(() => {
+        router.go('/server-error');
+      });
   }
 }

@@ -3,49 +3,57 @@ import ChatAPI from '../api/ChatAPI';
 import Store from '../modules/store';
 import Validate from '../utils/validate';
 import escape from '../utils/escape';
+import Router from '../modules/router';
 
-const store = Store.getInstance({});
+const store = Store.getInstance();
+const router = Router.getInstance();
 
 export default class WebSocketController {
   static connect(chatId: number): void {
-    ChatAPI.getToken(chatId).then((result) => {
-      store.setProps({ messages: null });
-      store.setProps({ socket: null });
+    ChatAPI.getToken(chatId)
+      .then((result) => {
+        store.setProps({ messages: null });
+        store.setProps({ socket: null });
 
-      if (result.status === 200) {
-        const response = JSON.parse(result.response);
+        if (result.status === 200) {
+          const response = JSON.parse(result.response);
 
-        const socket = new WebSocket(
-          `wss://ya-praktikum.tech/ws/chats/${store.props.user.id}/${chatId}/${response.token}`,
-        );
-
-        store.setProps({ socket });
-
-        socket.addEventListener('open', () => {
-          socket.send(
-            JSON.stringify({
-              content: '0',
-              type: 'get old',
-            }),
+          const socket = new WebSocket(
+            `wss://ya-praktikum.tech/ws/chats/${store.props.user.id}/${chatId}/${response.token}`,
           );
-        });
 
-        socket.addEventListener('message', (event) => {
-          if (store.props.messages) {
-            const message = JSON.parse(event.data);
+          store.setProps({ socket });
 
-            if (message.type !== 'user connected') {
-              const { messages } = store.props;
-              messages.push(message);
+          socket.addEventListener('open', () => {
+            socket.send(
+              JSON.stringify({
+                content: '0',
+                type: 'get old',
+              }),
+            );
+          });
 
-              store.setProps({ messages });
+          socket.addEventListener('message', (event) => {
+            if (store.props.messages) {
+              const message = JSON.parse(event.data);
+
+              if (message.type !== 'user connected') {
+                const { messages } = store.props;
+                messages.push(message);
+
+                store.setProps({ messages });
+              }
+            } else {
+              store.setProps({ messages: JSON.parse(event.data).reverse() });
             }
-          } else {
-            store.setProps({ messages: JSON.parse(event.data).reverse() });
-          }
-        });
-      }
-    });
+          });
+        }
+
+        return true;
+      })
+      .catch(() => {
+        router.go('/server-error');
+      });
   }
 
   static send(message: string): void {

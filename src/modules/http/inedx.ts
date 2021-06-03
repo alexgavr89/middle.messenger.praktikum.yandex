@@ -19,7 +19,7 @@ interface Options {
 export default class HTTP {
   constructor(protected baseurl: string) {}
 
-  get(url: string, options: Options): Promise<XMLHttpRequest> {
+  get(url: string, options = {}): Promise<XMLHttpRequest> {
     return HTTP.request(
       this.baseurl + url + queryStringify(options.data),
       { ...options, method: METHODS.GET },
@@ -27,7 +27,7 @@ export default class HTTP {
     );
   }
 
-  post(url: string, options: Options): Promise<XMLHttpRequest> {
+  post(url: string, options = {}): Promise<XMLHttpRequest> {
     return HTTP.request(
       this.baseurl + url,
       { ...options, method: METHODS.POST },
@@ -35,7 +35,7 @@ export default class HTTP {
     );
   }
 
-  put(url: string, options: Options): Promise<XMLHttpRequest> {
+  put(url: string, options = {}): Promise<XMLHttpRequest> {
     return HTTP.request(
       this.baseurl + url,
       { ...options, method: METHODS.PUT },
@@ -43,7 +43,7 @@ export default class HTTP {
     );
   }
 
-  delete(url: string, options: Options): Promise<XMLHttpRequest> {
+  delete(url: string, options = {}): Promise<XMLHttpRequest> {
     return HTTP.request(
       this.baseurl + url,
       { ...options, method: METHODS.DELETE },
@@ -93,8 +93,8 @@ export default class HTTP {
       }
 
       if (
-        options.method === METHODS.POST
-        || options.method === METHODS.DELETE
+        options.method === METHODS.POST ||
+        options.method === METHODS.DELETE
       ) {
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.send(JSON.stringify(data));

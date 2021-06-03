@@ -1,8 +1,8 @@
-import { readFileSync } from 'fs';
 import Handlebars from 'handlebars';
 import { Block, Props } from '../../../modules/block';
 import ButtonIcon from '../../button-icon';
 import WebSocketController from '../../../controllers/WebSocketController';
+import tmpl from './tmpl';
 
 import './style.scss';
 
@@ -14,7 +14,7 @@ interface ISendBlockProps extends Props {
 }
 
 export default class SendBlock extends Block {
-  constructor(props: ISendBlockProps) {
+  constructor(props?: ISendBlockProps) {
     super('div', {
       ...props,
 
@@ -52,10 +52,6 @@ export default class SendBlock extends Block {
   }
 
   compile(): string {
-    const tmpl = readFileSync(
-      './src/components/chat-block/send-block/tmpl.hbs',
-      'utf8',
-    );
     const sendBlock = Handlebars.compile(tmpl);
 
     return sendBlock(this.props);

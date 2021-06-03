@@ -1,9 +1,9 @@
-import { readFileSync } from 'fs';
 import Handlebars from 'handlebars';
 import { Block } from '../../../../../modules/block';
 import Button from '../../../../button';
 import InputBlock from '../../../../input-block';
 import UserController from '../../../../../controllers/UserController';
+import tmpl from './tmpl';
 
 export default class PasswordForm extends Block {
   constructor() {
@@ -92,10 +92,6 @@ export default class PasswordForm extends Block {
   }
 
   compile(): string {
-    const tmpl = readFileSync(
-      './src/components/chat-block/user-block/change-block/password-form/tmpl.hbs',
-      'utf8',
-    );
     const avatarForm = Handlebars.compile(tmpl);
 
     return avatarForm(this.props);

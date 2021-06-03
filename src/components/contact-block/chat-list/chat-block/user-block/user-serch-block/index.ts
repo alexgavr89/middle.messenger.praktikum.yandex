@@ -9,7 +9,7 @@ interface IUserSearchBlockProps extends Props {
   chatId: number;
 }
 
-const store = Store.getInstance({});
+const store = Store.getInstance();
 
 export default class UserSearchBlock extends Block {
   constructor(props: IUserSearchBlockProps) {

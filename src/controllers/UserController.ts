@@ -3,22 +3,27 @@ import { UserAPI, IPasswordProps, IProfileProps } from '../api/UserAPI';
 import Store from '../modules/store';
 import { Block } from '../modules/block';
 import Validate from '../utils/validate';
+import Router from '../modules/router';
 
-const store = Store.getInstance({});
+const store = Store.getInstance();
+const router = Router.getInstance();
 
 export default class UserController {
   static async changeAvatar(form: HTMLFormElement): Promise<void> {
-    UserAPI.changeAvatar(new FormData(form)).then((resp) => {
-      store.setProps({ user: JSON.parse(resp.response) });
-    });
+    UserAPI.changeAvatar(new FormData(form))
+      .then((resp) => {
+        store.setProps({ user: JSON.parse(resp.response) });
+
+        return true;
+      })
+      .catch(() => {
+        router.go('/server-error');
+      });
   }
 
   static changePassword(form: IPasswordProps, block: Block): void {
     const checkOldPassword = Validate.isPassword(form.oldPassword);
-    const checkNewPassword = Validate.isNotEqualPasswords(
-      form.oldPassword,
-      form.newPassword,
-    );
+    const checkNewPassword = Validate.isNotEqualPasswords(form.oldPassword, form.newPassword);
 
     if (checkOldPassword && checkNewPassword) {
       try {
@@ -88,17 +93,19 @@ export default class UserController {
     const login = store.props.searchUserInput;
 
     if (Validate.isNotEmpty(login as string)) {
-      try {
-        UserAPI.search(login as string).then((result) => {
+      UserAPI.search(login as string)
+        .then((result) => {
           if (result.status === 200) {
             store.setProps({
               [`users_${chatId}`]: JSON.parse(result.response),
             });
           }
+
+          return true;
+        })
+        .catch(() => {
+          router.go('/server-error');
         });
-      } catch {
-        //
-      }
     }
   }
 }

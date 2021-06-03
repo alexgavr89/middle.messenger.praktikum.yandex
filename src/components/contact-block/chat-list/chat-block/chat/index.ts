@@ -1,7 +1,7 @@
-import { readFileSync } from 'fs';
 import Handlebars from 'handlebars';
 import { Block, Props } from '../../../../../modules/block';
 import Avatar from '../../../../avatar';
+import tmpl from './tmpl';
 
 import './style.scss';
 
@@ -28,10 +28,6 @@ export class Chat extends Block {
   }
 
   compile(): string {
-    const tmpl = readFileSync(
-      './src/components/contact-block/chat-list/chat-block/chat/tmpl.hbs',
-      'utf8',
-    );
     const chat = Handlebars.compile(tmpl);
 
     if (this.props.unread_count === 0) {

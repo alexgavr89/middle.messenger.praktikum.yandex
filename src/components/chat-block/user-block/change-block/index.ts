@@ -8,11 +8,11 @@ import './style.scss';
 export default class ChangeBlock extends Block {
   constructor() {
     super('div', {
-      avatarForm: new AvaratForm({}),
+      avatarForm: new AvaratForm(),
 
       profileForm: new ProfileForm(),
 
-      passwordForm: new PasswordForm({}),
+      passwordForm: new PasswordForm(),
 
       stylesWrap: ['change-block'],
     });

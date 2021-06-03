@@ -1,4 +1,3 @@
-import { readFileSync } from 'fs';
 import Handlebars from 'handlebars';
 import { Block } from '../../../modules/block';
 import ButtonIcon from '../../button-icon';
@@ -6,10 +5,11 @@ import Avatar from '../../avatar';
 import ChangeBlock from './change-block';
 import LogoutController from '../../../controllers/LogoutController';
 import Store from '../../../modules/store';
+import tmpl from './tmpl';
 
 import './style.scss';
 
-const store = Store.getInstance({});
+const store = Store.getInstance();
 
 export default class UserBlock extends Block {
   constructor() {
@@ -55,10 +55,6 @@ export default class UserBlock extends Block {
   }
 
   compile(): string {
-    const tmpl = readFileSync(
-      './src/components/chat-block/user-block/tmpl.hbs',
-      'utf8',
-    );
     const settingBlock = Handlebars.compile(tmpl);
 
     return settingBlock(this.props);

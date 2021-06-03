@@ -32,9 +32,9 @@ export default class Store {
     this.eventBus = new EventBus();
   }
 
-  static getInstance(props: IStore): Store {
+  static getInstance(props = {}): Store {
     if (!Store.instance) {
-      Store.instance = new Store(props);
+      Store.instance = new Store(props as IStore);
     }
 
     return Store.instance;

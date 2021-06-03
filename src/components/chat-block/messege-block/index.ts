@@ -1,8 +1,8 @@
-import { readFileSync } from 'fs';
 import Handlebars from 'handlebars';
 import { Block, Props } from '../../../modules/block';
 import Store from '../../../modules/store';
 import Message from './message';
+import tmpl from './tmpl';
 
 import './style.scss';
 
@@ -10,11 +10,11 @@ interface IMessageBlock extends Props {
   list?: [];
 }
 
-const store = Store.getInstance({});
+const store = Store.getInstance();
 
 export default class MessageBlock extends Block {
-  constructor(props: IMessageBlock) {
-    super('div', { ...props }); // stylesWrap: ['message-block']
+  constructor(props?: IMessageBlock) {
+    super('div', { ...props });
   }
 
   mounted(): void {
@@ -24,10 +24,6 @@ export default class MessageBlock extends Block {
   }
 
   compile(): string {
-    const tmpl = readFileSync(
-      './src/components/chat-block/messege-block/tmpl.hbs',
-      'utf8',
-    );
     const messageBlock = Handlebars.compile(tmpl);
 
     return messageBlock(this.props);

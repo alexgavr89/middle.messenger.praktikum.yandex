@@ -9,7 +9,7 @@ interface IUserBlockProps extends Props {
   userSearchBlock?: UserSearchBlock;
 }
 
-const store = Store.getInstance({});
+const store = Store.getInstance();
 
 export default class UserBlock extends Block {
   constructor(props: IUserBlockProps) {

@@ -1,12 +1,12 @@
-import { readFileSync } from 'fs';
 import Handlebars from 'handlebars';
 import { Block, Props } from '../../../../../modules/block';
 import { Input } from '../../../../input-block/input';
 import Button from '../../../../button';
 import UserController from '../../../../../controllers/UserController';
+import tmpl from './tmpl';
 
 export default class AvaratForm extends Block {
-  constructor(props: Props) {
+  constructor(props?: Props) {
     super('div', {
       ...props,
 
@@ -40,10 +40,6 @@ export default class AvaratForm extends Block {
   }
 
   compile(): string {
-    const tmpl = readFileSync(
-      './src/components/chat-block/user-block/change-block/avatar-form/tmpl.hbs',
-      'utf8',
-    );
     const avatarForm = Handlebars.compile(tmpl);
 
     return avatarForm(this.props);

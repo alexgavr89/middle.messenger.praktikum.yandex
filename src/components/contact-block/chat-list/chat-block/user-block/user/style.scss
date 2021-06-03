@@ -7,7 +7,8 @@
 
   .button-icon {
     padding-top: 2px;
-    i {
+
+    &__image {
       font-size: 18px;
     }
   }
@@ -17,13 +18,13 @@
     padding-bottom: 5px;
     padding-left: 10px;
 
-    img {
+    &__image {
       width: 30px;
       height: 30px;
     }
   }
+}
 
-  span {
-    padding-left: 5px;
-  }
+.display-name {
+  padding-left: 5px;
 }

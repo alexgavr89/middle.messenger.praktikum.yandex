@@ -1,9 +1,9 @@
-import { readFileSync } from 'fs';
 import Handlebars from 'handlebars';
 import { Block } from '../../../../../modules/block';
 import Button from '../../../../button';
 import InputBlock from '../../../../input-block';
 import UserController from '../../../../../controllers/UserController';
+import tmpl from './tmpl';
 
 export default class ProfileForm extends Block {
   constructor() {
@@ -174,10 +174,6 @@ export default class ProfileForm extends Block {
   }
 
   compile(): string {
-    const tmpl = readFileSync(
-      './src/components/chat-block/user-block/change-block/profile-form/tmpl.hbs',
-      'utf8',
-    );
     const avatarForm = Handlebars.compile(tmpl);
 
     return avatarForm(this.props);
@@ -185,9 +181,7 @@ export default class ProfileForm extends Block {
 
   update(): void {
     const form = this.element.querySelector('form');
-    const {
-      firstName, secondName, phone, login, mail, button,
-    } = this.props;
+    const { firstName, secondName, phone, login, mail, button } = this.props;
 
     form.append(firstName.getContent());
     form.append(secondName.getContent());

@@ -1,6 +1,6 @@
-import { readFileSync } from 'fs';
 import Handlebars from 'handlebars';
 import { Block, Props } from '../../modules/block';
+import tmpl from './tmpl';
 
 import './style.scss';
 import '@fortawesome/fontawesome-free/css/all.css';
@@ -15,7 +15,6 @@ export default class ButtonIcon extends Block {
   }
 
   compile(): string {
-    const tmpl = readFileSync('./src/components/button-icon/tmpl.hbs', 'utf8');
     const btnIcon = Handlebars.compile(tmpl);
 
     return btnIcon(this.props);

@@ -1,6 +1,6 @@
-import { readFileSync } from 'fs';
 import Handlebars from 'handlebars';
 import { Block, Props } from '../../../../modules/block';
+import tmpl from './tmpl';
 
 import './style.scss';
 
@@ -21,10 +21,6 @@ export default class Message extends Block {
   }
 
   compile(): string {
-    const tmpl = readFileSync(
-      './src/components/chat-block/messege-block/message/tmpl.hbs',
-      'utf8',
-    );
     const message = Handlebars.compile(tmpl);
 
     return message(this.props);

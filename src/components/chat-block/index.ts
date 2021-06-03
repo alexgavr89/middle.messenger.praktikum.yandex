@@ -9,8 +9,8 @@ export default class ChatBlock extends Block {
   constructor() {
     super('div', {
       settingBlock: new UserBlock(),
-      messageBlock: new MessageBlock({}),
-      sendBlock: new SendBlock({}),
+      messageBlock: new MessageBlock(),
+      sendBlock: new SendBlock(),
       stylesWrap: ['chat-block'],
     });
   }

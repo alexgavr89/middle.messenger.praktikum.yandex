@@ -1,6 +1,6 @@
-import { readFileSync } from 'fs';
 import Handlebars from 'handlebars';
 import { Block, Props } from '../../modules/block';
+import tmpl from './tmpl';
 
 import './style.scss';
 
@@ -16,7 +16,6 @@ export default class Button extends Block {
   }
 
   compile(): string {
-    const tmpl = readFileSync('./src/components/button/tmpl.hbs', 'utf8');
     const button = Handlebars.compile(tmpl);
 
     return button(this.props);

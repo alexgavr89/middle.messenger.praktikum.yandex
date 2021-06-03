@@ -7,7 +7,7 @@ import Store from '../../../../../../../modules/store';
 
 import './style.scss';
 
-const store = Store.getInstance({});
+const store = Store.getInstance();
 
 interface IUserSearchProps extends Props {
   chatId: number;

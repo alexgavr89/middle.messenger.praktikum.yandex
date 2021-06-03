@@ -1,6 +1,6 @@
-import { readFileSync } from 'fs';
 import Handlebars from 'handlebars';
 import { Block, Props } from '../../modules/block';
+import tmpl from './tmpl';
 
 import './style.scss';
 
@@ -15,7 +15,6 @@ export default class Avatar extends Block {
   }
 
   compile(): string {
-    const tmpl = readFileSync('./src/components/avatar/tmpl.hbs', 'utf8');
     const avatar = Handlebars.compile(tmpl);
 
     if (this.props.src) {

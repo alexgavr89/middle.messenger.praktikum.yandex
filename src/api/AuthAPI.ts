@@ -23,14 +23,14 @@ export class AuthAPI {
   }
 
   static user(): Promise<XMLHttpRequest> {
-    return http.get('/user', {}).then((resp) => resp);
+    return http.get('/user');
   }
 
   static logout(): Promise<XMLHttpRequest> {
-    return http.post('/logout', {});
+    return http.post('/logout');
   }
 
   static signup(user: IRegistrationRequest): Promise<XMLHttpRequest> {
-    return http.post('/signup', { data: user }).then((resp) => resp);
+    return http.post('/signup', { data: user });
   }
 }

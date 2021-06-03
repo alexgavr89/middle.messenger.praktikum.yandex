@@ -6,7 +6,7 @@ import ChatController from '../../controllers/ChatController';
 
 import './style.scss';
 
-const store = Store.getInstance({});
+const store = Store.getInstance();
 
 export default class ContactBlock extends Block {
   constructor() {

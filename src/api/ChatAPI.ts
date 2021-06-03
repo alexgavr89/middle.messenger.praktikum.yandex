@@ -4,7 +4,7 @@ const http = new HTTP('https://ya-praktikum.tech/api/v2/chats');
 
 export default class ChatAPI {
   static get(): Promise<XMLHttpRequest> {
-    return http.get('/', {});
+    return http.get('/');
   }
 
   static create(value: string): Promise<XMLHttpRequest> {
@@ -12,6 +12,6 @@ export default class ChatAPI {
   }
 
   static getToken(chatId: number): Promise<XMLHttpRequest> {
-    return http.post(`/token/${chatId}`, { data: {} });
+    return http.post(`/token/${chatId}`);
   }
 }

@@ -26,11 +26,7 @@ export default class UserController {
     const checkNewPassword = Validate.isNotEqualPasswords(form.oldPassword, form.newPassword);
 
     if (checkOldPassword && checkNewPassword) {
-      try {
-        UserAPI.changePassword(form);
-      } catch {
-        //
-      }
+      UserAPI.changePassword(form);
     } else {
       if (!checkOldPassword) {
         block.props.oldPassword.props.error.show();
@@ -71,13 +67,10 @@ export default class UserController {
 
       data.display_name = `${data.first_name} ${data.second_name}`;
 
-      try {
-        const xhr = await UserAPI.changeProfile(data);
-        if (xhr.status === 200) {
-          store.setProps({ user: JSON.parse(xhr.response) });
-        }
-      } catch {
-        //
+      const xhr = await UserAPI.changeProfile(data);
+
+      if (xhr.status === 200) {
+        store.setProps({ user: JSON.parse(xhr.response) });
       }
     } else {
       if (!checkPhone) {

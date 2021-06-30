@@ -1,29 +1,30 @@
-import { readFileSync } from 'fs';
-import Handlebars from 'handlebars';
-import Block from '../../modules/block';
+import Handlebars = require('handlebars');
+import { Block, Props } from '../../modules/block';
+import FormLogin from '../form-login';
+import Link from '../link';
+import tmpl from './tmpl';
 
 import './style.scss';
 
-export default class FormBlock<F, E, L> extends Block {
-    constructor(props: { title: string; form: F; link: L; stylesWrap?: string[]; events?: E}) {
-        super('div', props);
-    }
+interface FormBlockProps extends Props {
+	title: string;
+	form: FormLogin;
+	link: Link;
+}
 
-    compile(): string {
-        const tmpl = readFileSync('./src/components/form-block/tmpl.hbs', 'utf8');
-        const formBlock = Handlebars.compile(tmpl);
+export default class FormBlock extends Block {
+	constructor(props: FormBlockProps) {
+		super('div', { ...props, stylesWrap: ['form-block'] });
+	}
 
-        return formBlock(this.props);
-    }
+	compile(): string {
+		const formBlock = Handlebars.compile(tmpl);
 
-    mounted(): void {
-        return;
-    }
+		return formBlock(this.props);
+	}
 
-    update(): void {
-        const {form, link} = this.props;
-
-        this.element.append(form.getContent());
-        this.element.append(link.getContent());
-    }
+	update(): void {
+		this.element.append(this.props.form.getContent());
+		this.element.append(this.props.link.getContent());
+	}
 }

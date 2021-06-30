@@ -1,0 +1,23 @@
+@import 'src/pages/style.scss';
+
+.user-nav {
+  display: flex;
+  padding: 10px 10px;
+  border-bottom: 1px solid $color-border;
+
+  &__setting {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__tool {
+    flex: 1;
+  }
+
+  &__avatar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}

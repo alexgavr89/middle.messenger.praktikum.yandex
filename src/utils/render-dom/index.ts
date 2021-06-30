@@ -1,5 +1,7 @@
-export function render<T>(query: string, block: T): void {
-    const root = document.querySelector(query);
+import { Block } from '../../modules/block';
 
-    root.insertBefore(block.getContent(), document.querySelector('script'));
+export default function render(query: string, block: Block): void {
+  const root = document.querySelector(query);
+
+  root.insertBefore(block.getContent(), document.querySelector('script'));
 }

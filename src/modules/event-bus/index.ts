@@ -1,39 +1,37 @@
 interface IEventBus {
-    on(event: string, callback: () => void): void;
+  on(event: string, callback: () => void): void;
 
-    off(event: string, callback: () => void): void;
+  off(event: string, callback: () => void): void;
 
-    emit<T>(event: string, ...args: T[]): void;
+  emit<T>(event: string, ...args: T[]): void;
 }
 
 export default class EventBus implements IEventBus {
-    private listeners = {};
+  private listeners = {};
 
-    on(event: string, callback: () => void): void {
-        if (!this.listeners[event]) {
-            this.listeners[event] = [];
-        }
-
-        this.listeners[event].push(callback);
+  on(event: string, callback: () => void): void {
+    if (!this.listeners[event]) {
+      this.listeners[event] = [];
     }
 
-    off(event: string, callback: () => void): void {
-        if (!this.listeners[event]) {
-            throw new Error(`Нет события: ${event}`);
-        }
+    this.listeners[event].push(callback);
+  }
 
-        this.listeners[event] = this.listeners[event].filter(
-            listener => listener !== callback
-        );
+  off(event: string, callback: () => void): void {
+    if (!this.listeners[event]) {
+      throw new Error(`Нет события: ${event}`);
     }
 
-    emit<T>(event: string, ...args: T[]): void {
-        if (!this.listeners[event]) {
-            throw new Error(`Нет события: ${event}`);
-        }
+    this.listeners[event] = this.listeners[event].filter(
+      (listener) => listener !== callback,
+    );
+  }
 
-        this.listeners[event].forEach(function (listener) {
-            listener(...args);
-        });
+  emit<T>(event: string, ...args: T[]): void {
+    if (this.listeners[event]) {
+      this.listeners[event].forEach((listener) => {
+        listener(...args);
+      });
     }
+  }
 }

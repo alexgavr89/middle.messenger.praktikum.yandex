@@ -1,26 +1,24 @@
-import {readFileSync} from 'fs';
 import Handlebars from 'handlebars';
-import Block from '../../../modules/block';
+import { Block, Props } from '../../../modules/block';
+import tmpl from './tmpl';
 
 import './stype.scss';
 
-export default class Input<E> extends Block {
-    constructor(props: { id: string; type: string; placeholder: string; stylesWrap?: string[]; events?: E }) {
-        super('div', props);
-    }
+export interface IInputProps extends Props {
+	id: string;
+	name: string;
+	type: string;
+	placeholder: string;
+}
 
-    compile(): string {
-        const tmpl = readFileSync('./src/components/input-block/input/tmpl.hbs', 'utf8');
-        const input = Handlebars.compile(tmpl);
+export class Input extends Block {
+	constructor(props: IInputProps) {
+		super('div', props);
+	}
 
-        return input(this.props);
-    }
+	compile(): string {
+		const input = Handlebars.compile(tmpl);
 
-    mounted(): void {
-        return;
-    }
-
-    update(): void {
-        return;
-    }
+		return input(this.props);
+	}
 }

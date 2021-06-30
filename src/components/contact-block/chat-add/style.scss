@@ -1,0 +1,13 @@
+@import 'src/pages/style.scss';
+
+.chat-add {
+  display: flex;
+  padding-top: 14px;
+  padding-bottom: 14px;
+  padding-left: 15px;
+  border-bottom: 1px solid $color-border;
+}
+
+.input-block {
+  flex: 1;
+}

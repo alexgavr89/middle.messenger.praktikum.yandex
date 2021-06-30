@@ -1,0 +1,52 @@
+@import 'src/pages/style';
+
+.chat {
+  display: flex;
+  height: 70px;
+  border-bottom: solid 1px $color-border;
+
+  &-selected {
+    background: $contact-active;
+  }
+
+  &__info {
+    flex: 1;
+    padding: 10px;
+  }
+
+  &:hover {
+    background: $contact-active;
+  }
+
+  &__message-info {
+    padding: 10px;
+    padding-right: 15px;
+    font-size: 16px;
+    line-height: 16px;
+  }
+
+  .avatar {
+    padding-top: 10px;
+    padding-left: 10px;
+
+    &__image {
+      border-radius: 12px;
+    }
+  }
+}
+
+.info {
+  &__name {
+    display: block;
+    padding-bottom: 5px;
+    font-size: 16px;
+    line-height: 16px;
+  }
+
+  &__last-message {
+    display: block;
+    color: $contact-message;
+    font-size: 12px;
+    line-height: 12px;
+  }
+}

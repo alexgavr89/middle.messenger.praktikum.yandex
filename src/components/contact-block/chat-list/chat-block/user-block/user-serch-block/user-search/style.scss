@@ -1,0 +1,11 @@
+@import 'src/pages/style.scss';
+
+.user-search {
+  display: flex;
+  margin-left: 35px;
+  border-left: 1px solid $color-border;
+
+  .button-icon__image {
+    font-size: 18px;
+  }
+}

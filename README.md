@@ -8,7 +8,7 @@
 - `npm run test` — запуск тестов.
 
 ## Cсылка на открытый PR
-[pull request](https://github.com/alexgavr89/middle.messenger.praktikum.yandex/pull/5)
+[pull request](https://github.com/alexgavr89/middle.messenger.praktikum.yandex/pull/6)
 
 ## Прототипы
 

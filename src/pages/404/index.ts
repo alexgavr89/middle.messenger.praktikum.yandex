@@ -1,13 +1,15 @@
-import { Block, Props } from '../../modules/block';
+import { Block } from '../../modules/block';
 
 import '../style.scss';
 
 export default class NotFound extends Block {
-	constructor(props: Props) {
-		super('div', props);
-	}
+  constructor() {
+    super('div', {});
+  }
 
-	update(): void {
-		this.element.append('404');
-	}
+  mounted(): void {}
+
+  render(): string {
+    return 'Errore 404';
+  }
 }

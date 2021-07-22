@@ -1,13 +1,21 @@
-import { Block, Props } from '../../modules/block';
-
-import '../style.scss';
+import { Block } from '../../modules/block';
 
 export default class ServerError extends Block {
-	constructor(props: Props) {
-		super('div', props);
-	}
+  constructor(text?: string) {
+    super('div', {
+      block: {
+        text,
+      },
+    });
+  }
 
-	update(): void {
-		this.element.append('500');
-	}
+  mounted(): void {}
+
+  render(): string {
+    if (typeof this.props.block?.text === 'string') {
+      return this.props.block.text;
+    }
+
+    return 'Errore 500';
+  }
 }

@@ -1,19 +1,23 @@
-import 'regenerator-runtime/runtime';
 import ChatUserAPI from '../api/ChatUserAPI';
 import Store from '../modules/store';
-import ChatController from './ChatController';
 import Router from '../modules/router';
 
 const store = Store.getInstance();
 const router = Router.getInstance();
 
+type Indexed<T = unknown> = {
+  [key: string]: T;
+};
+
 export default class ChatUserController {
   static get(chatId: number): void {
     ChatUserAPI.get(chatId)
       .then((result) => {
-        const users = JSON.parse(result.response).filter((user) => user.id !== store.props.user.id);
+        const users = JSON.parse(result.response);
 
-        store.setProps({ [`chatUsers_${chatId}`]: users });
+        users.filter((user: Indexed) => user.id && user.id !== store.get('user.id'));
+
+        store.setProps({ [`users_chat_${chatId}`]: users });
 
         return true;
       })
@@ -40,7 +44,7 @@ export default class ChatUserController {
     ChatUserAPI.add(chatId, userId)
       .then((result) => {
         if (result.status === 200) {
-          ChatController.get();
+          ChatUserController.get(chatId);
         }
 
         return true;

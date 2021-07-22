@@ -1,25 +1,25 @@
-interface IEventBus {
-  on(event: string, callback: () => void): void;
+export default class EventBus {
+  private listeners: {
+    [key: string]: ((...args: unknown[]) => void)[],
+  };
 
-  off(event: string, callback: () => void): void;
+  constructor() {
+    this.listeners = {};
+  }
 
-  emit<T>(event: string, ...args: T[]): void;
-}
-
-export default class EventBus implements IEventBus {
-  private listeners = {};
-
-  on(event: string, callback: () => void): void {
+  on(event: string, callback: (...args: unknown[]) => void | undefined): void {
     if (!this.listeners[event]) {
       this.listeners[event] = [];
     }
 
-    this.listeners[event].push(callback);
+    if (callback) {
+      this.listeners[event].push(callback);
+    }
   }
 
-  off(event: string, callback: () => void): void {
+  off(event: string, callback: (...args: unknown[]) => void): void {
     if (!this.listeners[event]) {
-      throw new Error(`Нет события: ${event}`);
+      throw new Error(`No event: ${event}`);
     }
 
     this.listeners[event] = this.listeners[event].filter(
@@ -27,7 +27,7 @@ export default class EventBus implements IEventBus {
     );
   }
 
-  emit<T>(event: string, ...args: T[]): void {
+  emit(event: string, ...args: unknown[]): void {
     if (this.listeners[event]) {
       this.listeners[event].forEach((listener) => {
         listener(...args);

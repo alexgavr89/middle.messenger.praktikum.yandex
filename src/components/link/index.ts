@@ -1,22 +1,40 @@
 import Handlebars from 'handlebars';
-import { Block, Props } from '../../modules/block';
-import tmpl from './tmpl';
+import { Block } from '../../modules/block';
 
+import tmpl from './tmpl';
 import './style.scss';
 
-interface LinkProps extends Props {
-	title: string;
-	href: string;
+interface LinkProps {
+  block: {
+    title: string;
+    href?: string;
+  },
+  events: {
+    [key: string]: (event: Event) => void;
+  },
 }
 
 export default class Link extends Block {
-	constructor(props: LinkProps) {
-		super('div', { ...props, stylesWrap: ['link'] });
-	}
+  constructor(props: LinkProps) {
+    super('div', {
+      block: {
+        ...props.block,
+        class: 'link__a',
+      },
+      attributes: {
+        class: ['link'],
+      },
+      events: {
+        ...props.events,
+      },
+    });
+  }
 
-	compile(): string {
-		const button = Handlebars.compile(tmpl);
+  mounted(): void {}
 
-		return button(this.props);
-	}
+  render(): string {
+    const link = Handlebars.compile(tmpl);
+
+    return link(this.props.block);
+  }
 }

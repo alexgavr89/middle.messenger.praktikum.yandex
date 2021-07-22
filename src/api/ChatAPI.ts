@@ -7,8 +7,8 @@ export default class ChatAPI {
     return http.get('/');
   }
 
-  static create(value: string): Promise<XMLHttpRequest> {
-    return http.post('/', { data: { title: value } });
+  static create(title: string): Promise<XMLHttpRequest> {
+    return http.post('/', { data: { title } });
   }
 
   static getToken(chatId: number): Promise<XMLHttpRequest> {

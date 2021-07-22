@@ -1,28 +1,41 @@
 import Handlebars from 'handlebars';
-import { Block, Props } from '../../modules/block';
-import tmpl from './tmpl';
+import { Block } from '../../modules/block';
 
+import tmpl from './tmpl';
 import './style.scss';
 
-interface IAvatarProps extends Props {
-  src: string;
-  alt?: string;
+interface AvatarProps {
+  block: {
+    src: string | null;
+    alt?: string;
+  }
 }
 
 export default class Avatar extends Block {
-  constructor(props: IAvatarProps) {
-    super('div', { ...props, stylesWrap: ['avatar'] });
+  constructor(props: AvatarProps) {
+    super('div', {
+      ...props,
+      attributes: {
+        class: ['avatar'],
+      },
+    });
   }
 
-  compile(): string {
+  mounted():void {}
+
+  render(): string {
     const avatar = Handlebars.compile(tmpl);
 
-    if (this.props.src) {
-      this.props.src = `https://ya-praktikum.tech/api/v2/resources/${this.props.src}`;
-    } else {
-      this.props.src = 'https://picsum.photos/50';
-    }
+    return avatar({
+      path: this.createPath(this.props.block?.src as string | null),
+      ...this.props.block,
+    });
+  }
 
-    return avatar(this.props);
+  private createPath(value: string | null | undefined): string {
+    if (value) {
+      return `https://ya-praktikum.tech/api/v2/resources/${value}`;
+    }
+    return 'https://picsum.photos/50';
   }
 }

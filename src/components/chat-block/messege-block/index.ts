@@ -1,49 +1,45 @@
-import Handlebars from 'handlebars';
-import { Block, Props } from '../../../modules/block';
+import { Block } from '../../../modules/block';
 import Store from '../../../modules/store';
-import Message from './message';
-import tmpl from './tmpl';
+import { Message, IMessage } from './message';
 
+import tmpl from './tmpl';
 import './style.scss';
 
-interface IMessageBlock extends Props {
-  list?: [];
-}
+type List = {
+  [key: string]: IMessage
+};
 
 const store = Store.getInstance();
 
 export default class MessageBlock extends Block {
-  constructor(props?: IMessageBlock) {
-    super('div', { ...props });
-  }
+  constructor() {
+    super('div', {
+      list: {},
+    });
 
-  mounted(): void {
-    store.registerEvent('messages', (messages) => {
-      this.setProps({ list: messages });
+    store.addEvent('messages', () => {
+      const listBlock = this.createDocumentElement('div');
+      const list = store.get('messages') as List;
+
+      Object.keys(list).forEach((key) => {
+        const message = new Message({
+          ...list[key],
+        });
+
+        listBlock.append(message.getContent());
+      });
+
+      this.setProps({
+        list: {
+          messages: listBlock,
+        },
+      });
     });
   }
 
-  compile(): string {
-    const messageBlock = Handlebars.compile(tmpl);
+  mounted(): void {}
 
-    return messageBlock(this.props);
-  }
-
-  update(): void {
-    const messageBlock = this.element.querySelector('.message-block');
-
-    if (this.props.list) {
-      this.props.list.forEach((element) => {
-        const stylesWrap = ['message'];
-
-        if (store.props.user.id === element.user_id) {
-          stylesWrap.push('message__user');
-        } else {
-          stylesWrap.push('message__contact');
-        }
-        const message = new Message({ ...element, stylesWrap });
-        messageBlock.append(message.getContent());
-      });
-    }
+  render(): string {
+    return tmpl;
   }
 }

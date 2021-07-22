@@ -1,21 +1,25 @@
 import { expect } from 'chai';
-import { Block, Props } from './index';
+import ServerError from '../../pages/500';
 
 describe('Block', () => {
-  function createBlock(tagName: string, props: Props) {
-    return new Block(tagName, props);
+  function createBlock() {
+    return new ServerError();
   }
 
   it('getContent возвращает HTMLElement', () => {
-    const block = createBlock('div', {});
+    const block = createBlock();
 
     expect(block.getContent()).instanceOf(HTMLElement);
   });
 
   it('setProps изменяет свойства', () => {
-    const block = createBlock('div', {});
-    block.setProps({ test: 'test' });
+    const block = createBlock();
+    block.setProps({
+      block: {
+        text: 'Error 501',
+      },
+    });
 
-    expect(block.props.test).to.equal('test');
+    expect(block.props.block?.text).to.equal('Error 501');
   });
 });

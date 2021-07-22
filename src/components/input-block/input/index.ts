@@ -1,24 +1,32 @@
-import Handlebars from 'handlebars';
-import { Block, Props } from '../../../modules/block';
-import tmpl from './tmpl';
+import { Block } from '../../../modules/block';
 
 import './stype.scss';
 
-export interface IInputProps extends Props {
-	id: string;
-	name: string;
-	type: string;
-	placeholder: string;
+export interface InputProps {
+  attributes: {
+    id?: string;
+    name: string;
+    type: string;
+    placeholder: string;
+  },
+  events?: {
+    [key: string]: (event: Event) => void;
+  }
 }
 
 export class Input extends Block {
-	constructor(props: IInputProps) {
-		super('div', props);
-	}
+  constructor(props: InputProps) {
+    super('input', {
+      attributes: {
+        ...props.attributes,
+        class: ['input'],
+        autocomplete: 'off',
+      },
+      events: props.events,
+    });
+  }
 
-	compile(): string {
-		const input = Handlebars.compile(tmpl);
+  mounted(): void {}
 
-		return input(this.props);
-	}
+  render(): void {}
 }

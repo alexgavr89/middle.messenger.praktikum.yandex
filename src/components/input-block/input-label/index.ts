@@ -1,20 +1,34 @@
 import Handlebars from 'handlebars';
-import { Block, Props } from '../../../modules/block';
+import { Block } from '../../../modules/block';
 import tmpl from './tmpl';
 
-export interface IInputLabelProps extends Props {
-	id: string;
-	label: string;
+export interface InputLabelProps {
+  block: {
+    label: string;
+  },
+  attributes: {
+    for: string;
+  }
 }
 
 export class InputLabel extends Block {
-	constructor(props: IInputLabelProps) {
-		super('div', props);
-	}
+  constructor(props: InputLabelProps) {
+    super('label', {
+      block: props.block,
+      attributes: {
+        ...props.attributes,
+        class: ['input-block__label'],
+      },
+    });
+  }
 
-	compile(): string {
-		const input = Handlebars.compile(tmpl);
+  mounted(): void {
+    this.visibility('hidden');
+  }
 
-		return input(this.props);
-	}
+  render(): string {
+    const inputLabel = Handlebars.compile(tmpl);
+
+    return inputLabel(this.props.block);
+  }
 }

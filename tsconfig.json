@@ -1,12 +1,18 @@
 {
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "test.ts"],
   "compilerOptions": {
-    "target": "ES6"
-  },
-  "noImplicitAny": true,
-  "noUnusedLocals": true,
-  "noUnusedParameters": true,
-  "sourceMap": true,
-  "strictNullChecks": true,
-  "exclude": ["node_modules", "deploy", "dist", "test"],
-  "module": "commonjs"
+    "target": "ES6",
+    "module": "commonjs",
+    "sourceMap": true,
+
+    "strict": true,
+ 
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  }
 }

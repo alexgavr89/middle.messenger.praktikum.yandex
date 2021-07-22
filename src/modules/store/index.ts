@@ -1,35 +1,22 @@
 import EventBus from '../event-bus';
 
-interface IStore {
-  [key: string]: unknown;
-}
+type IStore<T = unknown> = {
+  [key: string]: T;
+};
 
 export default class Store {
   private static instance: Store;
 
-  props: { [key: string]: unknown };
+  private props: IStore;
 
-  private eventBus: EventBus;
+  private eventBus: () => EventBus;
 
   private constructor(props: IStore) {
-    this.props = new Proxy(props, {
-      get(target, prop: string) {
-        const value = target[prop];
-        return typeof value === 'function' ? value.bind(target) : value;
-      },
+    this.props = {};
+    this.setProps(props);
 
-      set(target, prop: string, value) {
-        target[prop] = value;
-        return true;
-      },
-
-      deleteProperty(target, prop: string) {
-        delete target[prop];
-        return true;
-      },
-    });
-
-    this.eventBus = new EventBus();
+    const eBus = new EventBus();
+    this.eventBus = () => eBus;
   }
 
   static getInstance(props = {}): Store {
@@ -40,15 +27,90 @@ export default class Store {
     return Store.instance;
   }
 
-  registerEvent(name: string, callback: <T>(...args: T[]) => void): void {
-    this.eventBus.on(name, callback);
+  get(
+    findPath: string,
+    path?: string | undefined,
+    obj = this.props,
+  ): unknown {
+    let result;
+
+    for (const key of Object.keys(obj)) {
+      if (obj[key] instanceof Object) {
+        result = this.get(findPath, path ? `${path}.${key}` : key, obj[key] as IStore);
+
+        if (result) {
+          return result;
+        }
+      }
+
+      if (findPath === (path ? `${path}.${key}` : key)) {
+        return obj[key];
+      }
+    }
+
+    return result;
   }
 
-  setProps(data: { [key: string]: unknown }): void {
-    Object.assign(this.props, data);
+  addEvent(name: string, callback: <T>(...args: T[]) => void): void {
+    this.eventBus().on(name, callback);
+  }
 
-    Object.keys(data).forEach((key) => {
-      this.eventBus.emit(key, this.props[key]);
+  setProps(data: IStore): void {
+    this.merge(this.props, data);
+  }
+
+  private merge(target: IStore, source: IStore, path = ''): void {
+    if (!target) {
+      target = {};
+    }
+
+    Object.keys(source).forEach((key) => {
+      if (!Object.prototype.hasOwnProperty.call(source, key)) {
+        return;
+      }
+
+      try {
+        if (source[key] !== null && !Array.isArray(source[key]) && typeof source[key] === 'object') { // source[key] instanceof Object
+          if (!target[key]) {
+            target[key] = {};
+          }
+
+          this.merge(target[key] as IStore, source[key] as IStore, path ? `${path}.${key}` : key);
+        } else {
+          target[key] = source[key];
+        }
+      } catch (e) {
+        target[key] = source[key];
+      }
+
+      const name = path ? `${path}.${key}` : key;
+      this.eventBus().emit(name);
+    });
+  }
+
+  deleteProps(data: IStore): void {
+    this.delete(this.props, data);
+  }
+
+  private delete(target: IStore, source: IStore, path = ''): void {
+    if (!target) {
+      target = {};
+    }
+
+    Object.keys(source).forEach((key) => {
+      if (!Object.prototype.hasOwnProperty.call(source, key)) {
+        return;
+      }
+
+      if (source[key] instanceof Object) {
+        if (!target[key]) {
+          target[key] = {};
+        }
+
+        this.merge(target[key] as IStore, source[key] as IStore, path ? `${path}.${key}` : key);
+      } else {
+        delete target[key];
+      }
     });
   }
 }

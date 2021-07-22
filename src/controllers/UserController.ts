@@ -1,7 +1,5 @@
-import 'regenerator-runtime/runtime';
-import { UserAPI, IPasswordProps, IProfileProps } from '../api/UserAPI';
+import { UserAPI, PasswordProps, ProfileProps } from '../api/UserAPI';
 import Store from '../modules/store';
-import { Block } from '../modules/block';
 import Validate from '../utils/validate';
 import Router from '../modules/router';
 
@@ -11,8 +9,14 @@ const router = Router.getInstance();
 export default class UserController {
   static async changeAvatar(form: HTMLFormElement): Promise<void> {
     UserAPI.changeAvatar(new FormData(form))
-      .then((resp) => {
-        store.setProps({ user: JSON.parse(resp.response) });
+      .then((result) => {
+        const response = JSON.parse(result.response);
+
+        store.setProps({
+          user: {
+            avatar: response.avatar,
+          },
+        });
 
         return true;
       })
@@ -21,7 +25,9 @@ export default class UserController {
       });
   }
 
-  static changePassword(form: IPasswordProps, block: Block): void {
+  static changePassword(form: PasswordProps): void {
+    const { oldPassword, newPassword } = this.props.components;
+
     const checkOldPassword = Validate.isPassword(form.oldPassword);
     const checkNewPassword = Validate.isNotEqualPasswords(form.oldPassword, form.newPassword);
 
@@ -29,68 +35,77 @@ export default class UserController {
       UserAPI.changePassword(form);
     } else {
       if (!checkOldPassword) {
-        block.props.oldPassword.props.error.show();
+        oldPassword.props.error.print('Пожалуйста, укажите пароль длиннее 6 знаков');
       }
 
       if (!checkNewPassword) {
-        block.props.newPassword.props.error.show();
+        newPassword.props.error.print('Пожалуйста, укажите пароль длиннее 6 знаков');
       }
     }
   }
 
-  static async changeProfile(form: IProfileProps, block: Block): Promise<void> {
-    const data = { ...form };
+  static async changeProfile(form: ProfileProps): Promise<void> {
+    const { phone, mail } = this.props.components;
 
-    const checkPhone = Validate.isPhone(data.phone) || Validate.isEmpty(data.phone);
-    const checkMail = Validate.isEmail(data.email) || Validate.isEmpty(data.email);
+    const checkPhone = Validate.isPhone(form.phone) || Validate.isEmpty(form.phone);
+    const checkMail = Validate.isEmail(form.email) || Validate.isEmpty(form.email);
 
     if (checkPhone && checkMail) {
-      if (Validate.isEmpty(data.first_name)) {
-        data.first_name = store.props.user.first_name;
+      if (Validate.isEmpty(form.first_name)) {
+        form.first_name = store.get('user.first_name') as string;
       }
 
-      if (Validate.isEmpty(data.second_name)) {
-        data.second_name = store.props.user.second_name;
+      if (Validate.isEmpty(form.second_name)) {
+        form.second_name = store.get('user.second_name') as string;
       }
 
-      if (Validate.isEmpty(data.login)) {
-        data.login = store.props.user.login;
+      if (Validate.isEmpty(form.login)) {
+        form.login = store.get('user.login') as string;
       }
 
-      if (Validate.isEmpty(data.phone)) {
-        data.phone = store.props.user.phone;
+      if (Validate.isEmpty(form.phone)) {
+        form.phone = store.get('user.phone') as string;
       }
 
-      if (Validate.isEmpty(data.email)) {
-        data.email = store.props.user.email;
+      if (Validate.isEmpty(form.email)) {
+        form.email = store.get('user.email') as string;
       }
 
-      data.display_name = `${data.first_name} ${data.second_name}`;
-
-      const xhr = await UserAPI.changeProfile(data);
-
-      if (xhr.status === 200) {
-        store.setProps({ user: JSON.parse(xhr.response) });
-      }
-    } else {
-      if (!checkPhone) {
-        block.props.phone.props.error.show();
-      }
-      if (!checkMail) {
-        block.props.mail.props.error.show();
-      }
-    }
-  }
-
-  static search(chatId: number): void {
-    const login = store.props.searchUserInput;
-
-    if (Validate.isNotEmpty(login as string)) {
-      UserAPI.search(login as string)
+      UserAPI.changeProfile(form)
         .then((result) => {
           if (result.status === 200) {
             store.setProps({
-              [`users_${chatId}`]: JSON.parse(result.response),
+              user: JSON.parse(result.response),
+            });
+          }
+
+          return true;
+        })
+        .catch(() => {
+          router.go('/server-error');
+        });
+    } else {
+      if (!checkPhone) {
+        phone.props.error.print('Пожалуйста, укажите номер телефона');
+      }
+
+      if (!checkMail) {
+        mail.props.error.print('Пожалуйста, укажите почту');
+      }
+    }
+  }
+
+  static search(chatId: number, login: string): void {
+    if (Validate.isNotEmpty(login)) {
+      UserAPI.search(login)
+        .then((result) => {
+          if (result.status === 200) {
+            store.deleteProps({
+              [`users_search_list_${chatId}`]: '',
+            });
+
+            store.setProps({
+              [`users_search_list_${chatId}`]: JSON.parse(result.response),
             });
           }
 

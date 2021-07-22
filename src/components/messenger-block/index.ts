@@ -2,23 +2,25 @@ import { Block } from '../../modules/block';
 import ContactBlock from '../contact-block';
 import ChatBlock from '../chat-block';
 
+import tmpl from './tmpl';
 import './style.scss';
 
 export default class MessengerBlock extends Block {
   constructor() {
     super('div', {
-      contactBlock: new ContactBlock(),
-
-      chatBlock: new ChatBlock(),
-
-      stylesWrap: ['messenger-block'],
+      attributes: {
+        class: ['messenger-block'],
+      },
+      components: {
+        contactBlock: new ContactBlock(),
+        chatBlock: new ChatBlock(),
+      },
     });
   }
 
-  update(): void {
-    const { contactBlock, chatBlock } = this.props;
+  mounted():void {}
 
-    this.element.append(contactBlock.getContent());
-    this.element.append(chatBlock.getContent());
+  render(): string {
+    return tmpl;
   }
 }

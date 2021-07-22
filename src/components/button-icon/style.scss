@@ -1,6 +1,23 @@
 @import 'src/pages/style';
 
+$fa-font-path: '@fortawesome/fontawesome-free/webfonts';
+
+@import '@fortawesome/fontawesome-free/scss/fontawesome.scss';
+@import '@fortawesome/fontawesome-free/scss/solid.scss';
+
 .button-icon {
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+
+  &:active,
+  &:focus {
+    outline: none;
+  }
+
   &__image {
     padding: 10px;
     color: $color-btn-icon;

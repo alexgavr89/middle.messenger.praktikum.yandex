@@ -1,10 +1,13 @@
 import Handlebars from 'handlebars';
-import { Block, Props } from '../../../../modules/block';
-import tmpl from './tmpl';
+import { Block } from '../../../../modules/block';
+import Store from '../../../../modules/store';
 
+import tmpl from './tmpl';
 import './style.scss';
 
-interface IMessage extends Props {
+const store = Store.getInstance();
+
+export interface IMessage {
   chat_id: number;
   content: string;
   file: string | null;
@@ -15,14 +18,32 @@ interface IMessage extends Props {
   user_id: number;
 }
 
-export default class Message extends Block {
+export class Message extends Block {
   constructor(props: IMessage) {
-    super('div', props);
+    const messageClass = ['message'];
+    const userId = store.get('user.id');
+
+    if (userId === props.user_id) {
+      messageClass.push('message__user');
+    } else {
+      messageClass.push('message__contact');
+    }
+
+    super('div', {
+      block: {
+        ...props,
+      },
+      attributes: {
+        class: messageClass,
+      },
+    });
   }
 
-  compile(): string {
+  mounted(): void {}
+
+  render(): string {
     const message = Handlebars.compile(tmpl);
 
-    return message(this.props);
+    return message(this.props.block);
   }
 }

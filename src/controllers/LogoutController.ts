@@ -1,4 +1,3 @@
-import 'regenerator-runtime/runtime';
 import Router from '../modules/router';
 import { AuthAPI } from '../api/AuthAPI';
 

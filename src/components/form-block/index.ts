@@ -1,30 +1,37 @@
-import Handlebars = require('handlebars');
-import { Block, Props } from '../../modules/block';
+import Handlebars from 'handlebars';
+import { Block } from '../../modules/block';
 import FormLogin from '../form-login';
+import FormRegistration from '../form-registration';
 import Link from '../link';
-import tmpl from './tmpl';
 
+import tmpl from './tmpl';
 import './style.scss';
 
-interface FormBlockProps extends Props {
-	title: string;
-	form: FormLogin;
-	link: Link;
+interface FormBlockProps {
+  block: {
+    title: string;
+  },
+  components: {
+    form: FormLogin | FormRegistration;
+    link: Link;
+  }
 }
 
 export default class FormBlock extends Block {
-	constructor(props: FormBlockProps) {
-		super('div', { ...props, stylesWrap: ['form-block'] });
-	}
+  constructor(props: FormBlockProps) {
+    super('div', {
+      ...props,
+      attributes: {
+        class: ['form-block', 'form-block__header'],
+      },
+    });
+  }
 
-	compile(): string {
-		const formBlock = Handlebars.compile(tmpl);
+  mounted(): void {}
 
-		return formBlock(this.props);
-	}
+  render(): string {
+    const formBlock = Handlebars.compile(tmpl);
 
-	update(): void {
-		this.element.append(this.props.form.getContent());
-		this.element.append(this.props.link.getContent());
-	}
+    return formBlock(this.props.block);
+  }
 }

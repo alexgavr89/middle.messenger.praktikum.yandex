@@ -2,45 +2,55 @@ import { Block } from '../../../modules/block';
 import ButtonIcon from '../../button-icon';
 import { Input } from '../../input-block/input';
 import ChatController from '../../../controllers/ChatController';
-import Store from '../../../modules/store';
-import escape from '../../../utils/escape';
 
+import tmpl from './tmpl';
 import './style.scss';
 
-const store = Store.getInstance();
+interface ChatAddFilds extends HTMLFormControlsCollection {
+  title: { value: string };
+}
 
 export default class ChatAdd extends Block {
   constructor() {
-    super('div', {
-      title: new Input({
-        id: 'title',
-        name: 'title',
-        type: 'text',
-        placeholder: 'Название чата',
-        stylesWrap: ['input-block'],
-        events: {
-          change: (event) => {
-            store.setProps({ addChatInput: escape(event.target.value) });
-          },
-        },
-      }),
+    super('form', {
+      attributes: {
+        class: ['chat-add'],
+      },
+      events: {
+        submit: (event) => {
+          event.preventDefault();
 
-      btn: new ButtonIcon({
-        iconClass: 'fas fa-comment-medical',
-        stylesWrap: ['button-icon'],
-        events: {
-          click: () => {
-            ChatController.crete(this);
-          },
-        },
-      }),
+          if (event.target === null || !(event.target instanceof HTMLFormElement)) {
+            throw new Error(`${event} error`);
+          }
 
-      stylesWrap: ['chat-add'],
+          const { title } = event.target.elements as ChatAddFilds;
+
+          ChatController.create(title.value);
+
+          title.value = '';
+        },
+      },
+      components: {
+        input: new Input({
+          attributes: {
+            name: 'title',
+            type: 'text',
+            placeholder: 'Название чата',
+          },
+        }),
+        btn: new ButtonIcon({
+          block: {
+            iconClass: 'fas fa-comment-medical',
+          },
+        }),
+      },
     });
   }
 
-  update(): void {
-    this.element.append(this.props.title.getContent());
-    this.element.append(this.props.btn.getContent());
+  mounted(): void {}
+
+  render(): string {
+    return tmpl;
   }
 }

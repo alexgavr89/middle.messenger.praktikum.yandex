@@ -1,85 +1,97 @@
-import 'regenerator-runtime/runtime';
-import { AuthAPI, ILoginRequest } from '../api/AuthAPI';
+import { AuthAPI, LoginRequest } from '../api/AuthAPI';
 import Store from '../modules/store';
-import { Block } from '../modules/block';
 import Validate from '../utils/validate';
 import Router from '../modules/router';
-import escape from '../utils/escape';
 
 const store = Store.getInstance();
 const router = Router.getInstance();
 
 export default class AuthController {
-	static login(form: ILoginRequest, block: Block): void {
-		const checkLogin = Validate.isNotEmpty(form.login);
-		const checkPassword = Validate.isPassword(form.password);
+  static login(form: LoginRequest): void {
+    const { login, password } = this.props.components;
 
-		const data = Object.keys(form).reduce((acc, key) => {
-			acc[key] = escape(form[key]);
-			return acc;
-		}, {});
+    const checkLogin = Validate.isNotEmpty(form.login);
+    const checkPassword = Validate.isPassword(form.password);
 
-		if (checkLogin && checkPassword) {
-			AuthAPI.signin(data)
-				.then((result) => {
-					if (result.status === 200) {
-						AuthController.getUser();
-					}
+    if (login.props.components.error.get().length > 0) {
+      login.props.components.error.clear();
+    }
 
-					return true;
-				})
-				.catch(() => {
-					router.go('/server-error');
-				});
-		} else {
-			if (checkLogin) {
-				block.props.login.props.error.hide();
-			} else {
-				block.props.login.props.error.show();
-			}
+    if (password.props.components.error.get().length > 0) {
+      password.props.components.error.clear();
+    }
 
-			if (checkPassword) {
-				block.props.password.props.error.hide();
-			} else {
-				block.props.password.props.error.show();
-			}
-		}
-	}
+    if (checkLogin && checkPassword) {
+      AuthAPI.signin(form)
+        .then((result) => {
+          switch (result.status) {
+            case 200:
+              AuthController.getUser();
+              break;
+            case 400:
+              break;
+            case 401:
+              password.props.components.error.print('Неправильный логин или пароль');
+              break;
+            default:
+              break;
+          }
 
-	static getUser(): void {
-		AuthAPI.user()
-			.then((result) => {
-				if (result.status === 200) {
-					store.setProps({ user: JSON.parse(result.response) });
-					router.go('/messenger');
-				} else {
-					switch (window.location.pathname) {
-						case '/':
-							router.start('/login');
-							break;
+          return true;
+        })
+        .catch(() => {
+          router.go('/server-error');
+        });
+    } else {
+      if (checkLogin) {
+        login.props.components.error.clear();
+      } else {
+        login.props.components.error.print('Пожалуйста, укажите имя');
+      }
 
-						case '/login':
-							router.start('/login');
-							break;
+      if (checkPassword) {
+        password.props.components.error.clear();
+      } else {
+        password.props.components.error.print('Пожалуйста, укажите пароль');
+      }
+    }
+  }
 
-						case '/registration':
-							router.start('/registration');
-							break;
+  static getUser(): void {
+    AuthAPI.user()
+      .then((result) => {
+        if (result.status === 200) {
+          store.setProps({ user: JSON.parse(result.response) });
 
-						case '/messenger':
-							router.start('/login');
-							break;
+          router.go('/messenger');
+        } else {
+          switch (window.location.pathname) {
+            case '/':
+              router.start('/login');
+              break;
 
-						default:
-							router.start('/not-found');
-							break;
-					}
-				}
+            case '/login':
+              router.start('/login');
+              break;
 
-				return true;
-			})
-			.catch(() => {
-				router.go('/server-error');
-			});
-	}
+            case '/registration':
+              router.start('/registration');
+              break;
+
+            case '/messenger':
+              router.start('/login');
+              break;
+
+            default:
+              router.start('/not-found');
+              break;
+          }
+        }
+
+        return true;
+      })
+      .catch(() => {
+        router.go('/server-error');
+      });
+  }
 }

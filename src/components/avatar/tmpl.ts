@@ -1,1 +1,3 @@
-export default '<img class="avatar__imgage" src="{{src}}" alt="{{alt}}" />';
+export default `
+<img class="avatar__imgage" src="{{ path }}" alt="{{ alt }}" />
+`;

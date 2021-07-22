@@ -1,36 +1,40 @@
-import render from '../../utils/render-dom';
+import render from '../../utils/render';
 import { Block } from '../block';
 
 export interface Props {
-	rootQuery: string;
+  rootQuery: string;
 }
 
 export class Route {
-	private block: Block;
+  private block: Block | null;
 
-	constructor(private pathname: string, private ViewClass: typeof Block, private props: Props) {
-		this.block = null;
-	}
+  constructor(private pathname: string, private ViewClass: any, private props: Props) {
+    this.block = null;
+  }
 
-	navigate(pathname: string): void {
-		if (this.match(pathname)) {
-			this.block.show();
-		}
-	}
+  navigate(pathname: string): void {
+    if (this.block && this.match(pathname)) {
+      this.block.visibility('visible');
+    }
+  }
 
-	leave(): void {
-		this.block.remove();
-	}
+  leave(): void {
+    if (this.block) {
+      this.block.remove();
+    }
+  }
 
-	match(pathname: string): boolean {
-		return pathname === this.pathname;
-	}
+  match(pathname: string): boolean {
+    return pathname === this.pathname;
+  }
 
-	render(): void {
-		if (!this.block) {
-			this.block = new this.ViewClass('div', { stylesWrap: ['app'] });
-		}
+  render(): void {
+    if (!this.block) {
+      this.block = new this.ViewClass();
+    }
 
-		render(this.props.rootQuery, this.block);
-	}
+    if (this.block) {
+      render(this.props.rootQuery, this.block);
+    }
+  }
 }

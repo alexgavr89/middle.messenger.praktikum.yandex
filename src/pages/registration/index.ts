@@ -1,39 +1,51 @@
+import Handlebars from 'handlebars';
 import { Block } from '../../modules/block';
 import FormBlock from '../../components/form-block';
 import Link from '../../components/link';
 import FormRegistration from '../../components/form-registration';
 import Router from '../../modules/router';
 
+import tmpl from './tmpl';
+import '../style.scss';
+
 const router = Router.getInstance();
 
 export default class Registration extends Block {
-  private constructor() {
+  constructor() {
     super('div', {
-      formBlock: new FormBlock({
-        title: 'Регистрация',
-        form: new FormRegistration(),
-        link: new Link({
-          title: 'Войти',
-          href: 'index.html',
-          events: {
-            click: (event) => {
-              event.preventDefault();
+      attributes: {
+        class: ['app'],
+      },
+      components: {
+        formBlock: new FormBlock({
+          block: {
+            title: 'Регистрация',
+          },
+          components: {
+            form: new FormRegistration(),
+            link: new Link({
+              block: {
+                title: 'Войти',
+              },
+              events: {
+                click: (event) => {
+                  event.preventDefault();
 
-              router.go('/login');
-            },
+                  router.go('/login');
+                },
+              },
+            }),
           },
         }),
-      }),
-
-      stylesWrap: ['app'],
-
-      setting: {
-        uuid: true,
       },
     });
   }
 
-  update(): void {
-    this.element.append(this.props.formBlock.getContent());
+  mounted(): void {}
+
+  render(): string {
+    const registration = Handlebars.compile(tmpl);
+
+    return registration({});
   }
 }

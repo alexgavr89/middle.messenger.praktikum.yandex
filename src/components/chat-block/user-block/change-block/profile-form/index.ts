@@ -1,193 +1,190 @@
-import Handlebars from 'handlebars';
 import { Block } from '../../../../../modules/block';
 import Button from '../../../../button';
 import InputBlock from '../../../../input-block';
 import UserController from '../../../../../controllers/UserController';
+
 import tmpl from './tmpl';
+
+interface ProfileFilds extends HTMLFormControlsCollection {
+  firstName: { value: string };
+  secondName: { value: string };
+  login: { value: string };
+  phone: { value: string };
+  mail: { value: string };
+}
 
 export default class ProfileForm extends Block {
   constructor() {
-    super('div', {
-      firstName: new InputBlock({
-        label: {
-          id: 'firstName',
-          label: 'Имя',
-        },
-        input: {
-          id: 'firstName',
-          name: 'firstName',
-          type: 'text',
-          placeholder: 'Имя',
-          events: {
-            focus: () => {
-              this.props.firstName.props.label.show();
-            },
-            blur: (event) => {
-              if (event.target.value.length === 0) {
-                this.props.firstName.props.label.hide();
-              }
-            },
-          },
-        },
-        error: {
-          error: 'Пожалуйста, укажите имя',
-        },
-      }),
-
-      secondName: new InputBlock({
-        label: {
-          id: 'secondName',
-          label: 'Фамилия',
-        },
-        input: {
-          id: 'secondName',
-          name: 'secondName',
-          type: 'text',
-          placeholder: 'Фамилия',
-          events: {
-            focus: () => {
-              this.props.secondName.props.label.show();
-            },
-            blur: (event) => {
-              if (event.target.value.length === 0) {
-                this.props.secondName.props.label.hide();
-              }
-            },
-          },
-          stylesWrap: ['input-block'],
-        },
-        error: {
-          error: 'Пожалуйста, укажите фамилию',
-        },
-      }),
-
-      phone: new InputBlock({
-        label: {
-          id: 'phone',
-          label: 'Телефон',
-        },
-        input: {
-          id: 'phone',
-          name: 'phone',
-          type: 'text',
-          placeholder: 'Телефон',
-          events: {
-            focus: () => {
-              this.props.phone.props.label.show();
-            },
-            blur: (event) => {
-              if (event.target.value.length === 0) {
-                this.props.phone.props.label.hide();
-              }
-            },
-          },
-        },
-        error: {
-          error: 'Пожалуйста, укажите номер телефона',
-        },
-      }),
-
-      login: new InputBlock({
-        label: {
-          id: 'login',
-          label: 'Логин',
-        },
-        input: {
-          id: 'login',
-          name: 'login',
-          type: 'text',
-          placeholder: 'Логин',
-          events: {
-            focus: () => {
-              this.props.login.props.label.show();
-            },
-            blur: (event) => {
-              if (event.target.value.length === 0) {
-                this.props.login.props.label.hide();
-              }
-            },
-          },
-        },
-        error: {
-          error: 'Пожалуйста, укажите логин',
-        },
-      }),
-
-      mail: new InputBlock({
-        label: {
-          id: 'mail',
-          label: 'Почта',
-        },
-        input: {
-          id: 'mail',
-          name: 'mail',
-          type: 'text',
-          placeholder: 'Почта',
-          events: {
-            focus: () => {
-              this.props.mail.props.label.show();
-            },
-            blur: (event) => {
-              if (event.target.value.length === 0) {
-                this.props.mail.props.label.hide();
-              }
-            },
-          },
-        },
-        error: {
-          error: 'Пожалуйста, укажите почту',
-        },
-      }),
-
-      button: new Button({
-        title: 'Сохранить',
-        type: 'submit',
-        class: 'btn__form',
-      }),
-
+    super('form', {
+      attributes: {
+        class: ['change-form'],
+      },
       events: {
         submit: (event) => {
           event.preventDefault();
+
+          if (event.target === null || !(event.target instanceof HTMLFormElement)) {
+            throw new Error(`${event} error`);
+          }
+
           const {
             firstName,
             secondName,
             login,
             phone,
             mail,
-          } = event.target.elements;
+          } = event.target.elements as ProfileFilds;
 
-          UserController.changeProfile(
-            {
-              first_name: firstName.value,
-              second_name: secondName.value,
-              login: login.value,
-              phone: phone.value,
-              email: mail.value,
-            },
-            this,
-          );
+          UserController.changeProfile.call(this, {
+            first_name: firstName.value,
+            second_name: secondName.value,
+            login: login.value,
+            phone: phone.value,
+            email: mail.value,
+            display_name: `${firstName.value} ${secondName.value}`,
+          });
         },
       },
-
-      stylesWrap: ['change-form'],
+      components: {
+        firstName: new InputBlock({
+          block: {
+            label: {
+              block: {
+                label: 'Имя',
+              },
+              attributes: {
+                for: 'firstName',
+              },
+            },
+            input: {
+              attributes: {
+                id: 'firstName',
+                name: 'firstName',
+                type: 'text',
+                placeholder: 'Имя',
+              },
+            },
+            error: {
+              block: {
+                error: '',
+              },
+            },
+          },
+        }),
+        secondName: new InputBlock({
+          block: {
+            label: {
+              block: {
+                label: 'Фамилия',
+              },
+              attributes: {
+                for: 'secondName',
+              },
+            },
+            input: {
+              attributes: {
+                id: 'secondName',
+                name: 'secondName',
+                type: 'text',
+                placeholder: 'Фамилия',
+              },
+            },
+            error: {
+              block: {
+                error: '',
+              },
+            },
+          },
+        }),
+        phone: new InputBlock({
+          block: {
+            label: {
+              block: {
+                label: 'Телефон',
+              },
+              attributes: {
+                for: 'phone',
+              },
+            },
+            input: {
+              attributes: {
+                id: 'phone',
+                name: 'phone',
+                type: 'text',
+                placeholder: 'Телефон',
+              },
+            },
+            error: {
+              block: {
+                error: '',
+              },
+            },
+          },
+        }),
+        login: new InputBlock({
+          block: {
+            label: {
+              block: {
+                label: 'Логин',
+              },
+              attributes: {
+                for: 'login',
+              },
+            },
+            input: {
+              attributes: {
+                id: 'login',
+                name: 'login',
+                type: 'text',
+                placeholder: 'Логин',
+              },
+            },
+            error: {
+              block: {
+                error: '',
+              },
+            },
+          },
+        }),
+        mail: new InputBlock({
+          block: {
+            label: {
+              block: {
+                label: 'Почта',
+              },
+              attributes: {
+                for: 'mail',
+              },
+            },
+            input: {
+              attributes: {
+                id: 'mail',
+                name: 'mail',
+                type: 'text',
+                placeholder: 'Почта',
+              },
+            },
+            error: {
+              block: {
+                error: '',
+              },
+            },
+          },
+        }),
+        button: new Button({
+          block: {
+            title: 'Сохранить',
+            type: 'submit',
+            class: 'btn__form',
+          },
+        }),
+      },
     });
   }
 
-  compile(): string {
-    const avatarForm = Handlebars.compile(tmpl);
+  mounted(): void {}
 
-    return avatarForm(this.props);
-  }
-
-  update(): void {
-    const form = this.element.querySelector('form');
-    const { firstName, secondName, phone, login, mail, button } = this.props;
-
-    form.append(firstName.getContent());
-    form.append(secondName.getContent());
-    form.append(phone.getContent());
-    form.append(login.getContent());
-    form.append(mail.getContent());
-    form.append(button.getContent());
+  render(): string {
+    return tmpl;
   }
 }

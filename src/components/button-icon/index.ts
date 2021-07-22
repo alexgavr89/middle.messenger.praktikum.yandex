@@ -1,22 +1,43 @@
 import Handlebars from 'handlebars';
-import { Block, Props } from '../../modules/block';
+import { Block } from '../../modules/block';
+
 import tmpl from './tmpl';
-
 import './style.scss';
-import '@fortawesome/fontawesome-free/css/all.css';
 
-interface IButtonIconProps extends Props {
-  iconClass: string;
+interface ButtonIconProps {
+  block: {
+    iconClass: string;
+  },
+  attributes?: {
+    class: string[];
+  },
+  events?: {
+    [key: string]: (event: Event) => void;
+  },
 }
 
 export default class ButtonIcon extends Block {
-  constructor(props: IButtonIconProps) {
-    super('div', { ...props, stylesWrap: ['button-icon'] });
+  constructor(props: ButtonIconProps) {
+    const attributeClass = ['button-icon'];
+
+    if (props.attributes?.class) {
+      attributeClass.push(...props.attributes.class);
+    }
+
+    super('button', {
+      ...props,
+      attributes: {
+        class: attributeClass,
+        type: 'submit',
+      },
+    });
   }
 
-  compile(): string {
+  mounted():void {}
+
+  render(): string {
     const btnIcon = Handlebars.compile(tmpl);
 
-    return btnIcon(this.props);
+    return btnIcon(this.props.block);
   }
 }

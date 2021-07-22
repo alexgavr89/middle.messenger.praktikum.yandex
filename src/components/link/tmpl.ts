@@ -1,1 +1,5 @@
-export default '<a class="link__a" href="{{href}}">{{title}}</a>';
+export default `
+<a class=" {{ class }}" href="{{ href }}">
+  {{ title }}
+</a>
+`;

@@ -1,1 +1,5 @@
-export default '<div class="form-block__header"><h1>{{title}}</h1></div>';
+export default `
+<h1>{{ title }}</h1>
+<t-form></t-form>
+<t-link></t-link>
+`;

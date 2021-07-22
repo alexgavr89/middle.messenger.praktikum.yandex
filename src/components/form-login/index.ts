@@ -3,92 +3,100 @@ import { Block } from '../../modules/block';
 import InputBlock from '../input-block';
 import Button from '../button';
 import AuthController from '../../controllers/AuthController';
+
 import tmpl from './tmpl';
 
+interface LoginFilds extends HTMLFormControlsCollection {
+  login: { value: string };
+  password: { value: string };
+}
+
 export default class FormLogin extends Block {
-	constructor() {
-		super('div', {
-			login: new InputBlock({
-				label: { id: 'login', label: 'Логин' },
-				input: {
-					id: 'login',
-					name: 'login',
-					type: 'text',
-					placeholder: 'Логин',
-					events: {
-						focus: () => {
-							this.props.login.props.label.show();
-						},
-						blur: (event) => {
-							if (event.target.value.length === 0) {
-								this.props.login.props.label.hide();
-							}
-						},
-					},
-				},
-				error: { error: 'Пожалуйста, укажите логин' },
-				stylesWrap: ['input-block'],
-			}),
+  constructor() {
+    super('form', {
+      events: {
+        submit: (event) => {
+          event.preventDefault();
 
-			password: new InputBlock({
-				label: {
-					id: 'password',
-					label: 'Пароль',
-				},
-				input: {
-					id: 'password',
-					name: 'password',
-					type: 'password',
-					placeholder: 'Пароль',
-					events: {
-						focus: () => {
-							this.props.password.props.label.show();
-						},
-						blur: (event) => {
-							if (event.target.value.length === 0) {
-								this.props.password.props.label.hide();
-							}
-						},
-					},
-				},
-				error: { error: 'Пожалуйста, укажите пароль' },
-				stylesWrap: ['input-block'],
-			}),
+          if (event.target === null || !(event.target instanceof HTMLFormElement)) {
+            throw new Error(`${event} error`);
+          }
 
-			button: new Button({
-				title: 'Далее',
-				type: 'submit',
-				class: 'btn__form',
-			}),
+          const { login, password } = event.target.elements as LoginFilds;
 
-			events: {
-				submit: (event) => {
-					event.preventDefault();
-					const { login, password } = event.target.elements;
+          AuthController.login.call(this, {
+            login: login.value,
+            password: password.value,
+          });
+        },
+      },
+      components: {
+        login: new InputBlock({
+          block: {
+            label: {
+              block: {
+                label: 'Логин',
+              },
+              attributes: {
+                for: 'login',
+              },
+            },
+            input: {
+              attributes: {
+                id: 'login',
+                name: 'login',
+                type: 'text',
+                placeholder: 'Логин',
+              },
+            },
+            error: {
+              block: {
+                error: '',
+              },
+            },
+          },
+        }),
+        password: new InputBlock({
+          block: {
+            label: {
+              block: {
+                label: 'Пароль',
+              },
+              attributes: {
+                for: 'password',
+              },
+            },
+            input: {
+              attributes: {
+                id: 'password',
+                name: 'password',
+                type: 'password',
+                placeholder: 'Пароль',
+              },
+            },
+            error: {
+              block: {
+                error: '',
+              },
+            },
+          },
+        }),
+        button: new Button({
+          block: {
+            title: 'Далее',
+            type: 'submit',
+            class: 'btn__form',
+          },
+        }),
+      },
+    });
+  }
 
-					AuthController.login(
-						{
-							login: login.value,
-							password: password.value,
-						},
-						this,
-					);
-				},
-			},
-		});
-	}
+  mounted(): void {}
 
-	compile(): string {
-		const formBlock = Handlebars.compile(tmpl);
+  render(): string {
+    const formLogin = Handlebars.compile(tmpl);
 
-		return formBlock(this.props);
-	}
-
-	update(): void {
-		const form = this.element.querySelector('form');
-
-		form.append(this.props.login.getContent());
-		form.append(this.props.password.getContent());
-		form.append(this.props.button.getContent());
-	}
+    return formLogin({});
+  }
 }

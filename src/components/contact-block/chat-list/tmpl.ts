@@ -1,1 +1,3 @@
-export default '<div class="chat-list"></div>';
+export default `
+<l-chat></l-chat>
+`;

@@ -1,108 +1,102 @@
-import Handlebars from 'handlebars';
 import { Block } from '../../../../../modules/block';
 import Button from '../../../../button';
 import InputBlock from '../../../../input-block';
 import UserController from '../../../../../controllers/UserController';
+
 import tmpl from './tmpl';
+
+interface ProfileFilds extends HTMLFormControlsCollection {
+  oldPassword: { value: string };
+  newPassword: { value: string };
+}
 
 export default class PasswordForm extends Block {
   constructor() {
-    super('div', {
-      oldPassword: new InputBlock({
-        label: {
-          id: 'oldPassword',
-          label: 'Старый пароль',
-        },
-
-        input: {
-          id: 'oldPassword',
-          name: 'oldPassword',
-          type: 'password',
-          placeholder: 'Старый пароль',
-          events: {
-            focus: () => {
-              this.props.oldPassword.props.label.show();
-            },
-            blur: (event) => {
-              if (event.target.value.length === 0) {
-                this.props.oldPassword.props.label.hide();
-              }
-            },
-          },
-        },
-
-        error: {
-          error: 'Пожалуйста, укажите пароль длиннее 6 знаков',
-        },
-      }),
-
-      newPassword: new InputBlock({
-        label: {
-          id: 'newPassword',
-          label: 'Новый пароль',
-        },
-
-        input: {
-          id: 'newPassword',
-          name: 'newPassword',
-          type: 'password',
-          placeholder: 'Новый пароль',
-          events: {
-            focus: () => {
-              this.props.newPassword.props.label.show();
-            },
-            blur: (event) => {
-              if (event.target.value.length === 0) {
-                this.props.newPassword.props.label.hide();
-              }
-            },
-          },
-        },
-
-        error: {
-          error: 'Пожалуйста, укажите пароль длиннее 6 знаков',
-        },
-      }),
-
-      passwordButton: new Button({
-        title: 'Изменить пароль',
-        type: 'submit',
-        class: 'btn__form',
-        stylesWrap: ['btn'],
-      }),
-
+    super('form', {
+      attributes: {
+        class: ['change-form'],
+      },
       events: {
         submit: (event) => {
           event.preventDefault();
 
-          const { oldPassword, newPassword } = event.target.elements;
+          if (event.target === null || !(event.target instanceof HTMLFormElement)) {
+            throw new Error(`${event} error`);
+          }
 
-          UserController.changePassword(
-            {
-              oldPassword: oldPassword.value,
-              newPassword: newPassword.value,
-            },
-            this,
-          );
+          const { oldPassword, newPassword } = event.target.elements as ProfileFilds;
+
+          UserController.changePassword.call(this, {
+            oldPassword: oldPassword.value,
+            newPassword: newPassword.value,
+          });
         },
       },
-
-      stylesWrap: ['change-form'],
+      components: {
+        oldPassword: new InputBlock({
+          block: {
+            label: {
+              block: {
+                label: 'Старый пароль',
+              },
+              attributes: {
+                for: 'oldPassword',
+              },
+            },
+            input: {
+              attributes: {
+                id: 'oldPassword',
+                name: 'oldPassword',
+                type: 'password',
+                placeholder: 'Старый пароль',
+              },
+            },
+            error: {
+              block: {
+                error: '',
+              },
+            },
+          },
+        }),
+        newPassword: new InputBlock({
+          block: {
+            label: {
+              block: {
+                label: 'Новый пароль',
+              },
+              attributes: {
+                for: 'newPassword',
+              },
+            },
+            input: {
+              attributes: {
+                id: 'newPassword',
+                name: 'newPassword',
+                type: 'password',
+                placeholder: 'Новый пароль',
+              },
+            },
+            error: {
+              block: {
+                error: '',
+              },
+            },
+          },
+        }),
+        passwordButton: new Button({
+          block: {
+            title: 'Изменить пароль',
+            type: 'submit',
+            class: 'btn__form',
+          },
+        }),
+      },
     });
   }
 
-  compile(): string {
-    const avatarForm = Handlebars.compile(tmpl);
+  mounted(): void {}
 
-    return avatarForm(this.props);
-  }
-
-  update(): void {
-    const form = this.element.querySelector('form');
-    const { oldPassword, newPassword, passwordButton } = this.props;
-
-    form.append(oldPassword.getContent());
-    form.append(newPassword.getContent());
-    form.append(passwordButton.getContent());
+  render(): string {
+    return tmpl;
   }
 }

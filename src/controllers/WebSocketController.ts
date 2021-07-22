@@ -1,53 +1,24 @@
-import 'regenerator-runtime/runtime';
 import ChatAPI from '../api/ChatAPI';
 import Store from '../modules/store';
 import Validate from '../utils/validate';
 import escape from '../utils/escape';
 import Router from '../modules/router';
+import { IUser } from '../api/AuthAPI';
 
 const store = Store.getInstance();
 const router = Router.getInstance();
 
 export default class WebSocketController {
-  static connect(chatId: number): void {
-    ChatAPI.getToken(chatId)
-      .then((result) => {
-        store.setProps({ messages: null });
-        store.setProps({ socket: null });
+  private chatId: number;
 
-        if (result.status === 200) {
-          const response = JSON.parse(result.response);
+  private ws: WebSocket | undefined;
 
-          const socket = new WebSocket(
-            `wss://ya-praktikum.tech/ws/chats/${store.props.user.id}/${chatId}/${response.token}`,
-          );
+  constructor(chatId: number) {
+    this.chatId = chatId;
 
-          store.setProps({ socket });
-
-          socket.addEventListener('open', () => {
-            socket.send(
-              JSON.stringify({
-                content: '0',
-                type: 'get old',
-              }),
-            );
-          });
-
-          socket.addEventListener('message', (event) => {
-            if (store.props.messages) {
-              const message = JSON.parse(event.data);
-
-              if (message.type !== 'user connected') {
-                const { messages } = store.props;
-                messages.push(message);
-
-                store.setProps({ messages });
-              }
-            } else {
-              store.setProps({ messages: JSON.parse(event.data).reverse() });
-            }
-          });
-        }
+    this.connect()
+      .then((response) => {
+        this.ws = response;
 
         return true;
       })
@@ -56,23 +27,86 @@ export default class WebSocketController {
       });
   }
 
-  static send(message: string): void {
-    if (store.props.socket && Validate.isNotEmpty(message)) {
-      store.props.socket.send(
-        JSON.stringify({
-          content: escape(message),
-          type: 'message',
-        }),
+  async connect(): Promise<WebSocket> {
+    const result = await ChatAPI.getToken(this.chatId);
+
+    if (result.status === 200) {
+      const response = JSON.parse(result.response);
+
+      const { id } = store.get('user') as IUser;
+
+      const socket = await new WebSocket(
+        `wss://ya-praktikum.tech/ws/chats/${id}/${this.chatId}/${response.token}`,
       );
+
+      socket.addEventListener('open', () => {
+        socket.send(
+          JSON.stringify({
+            content: '0',
+            type: 'get old',
+          }),
+        );
+      });
+
+      socket.addEventListener('message', (event) => {
+        const data = JSON.parse(event.data);
+
+        if (Array.isArray(data)) {
+          store.setProps({
+            messages: data.reverse(),
+          });
+        }
+
+        if (data !== null && !Array.isArray(data) && typeof data === 'object') {
+          if (data.type !== 'user connected') {
+            const messages = store.get('messages');
+
+            if (Array.isArray(messages)) {
+              store.setProps({
+                messages: [...messages, data],
+              });
+            }
+          }
+        }
+      });
+
+      return socket;
+    }
+
+    throw new Error('WebSocket connect error');
+  }
+
+  send(message: string): void {
+    if (this.ws instanceof WebSocket && Validate.isNotEmpty(message)) {
+      if (!this.ws.readyState) {
+        setTimeout(() => {
+          this.send(message);
+        }, 100);
+      } else {
+        this.ws.send(
+          JSON.stringify({
+            content: escape(message),
+            type: 'message',
+          }),
+        );
+      }
     }
   }
 
-  static get(): void {
-    store.props.socket.send(
-      JSON.stringify({
-        content: '10',
-        type: 'get old',
-      }),
-    );
+  get(): void {
+    if (this.ws instanceof WebSocket) {
+      if (!this.ws.readyState) {
+        setTimeout(() => {
+          this.get();
+        }, 100);
+      } else {
+        this.ws.send(
+          JSON.stringify({
+            content: '10',
+            type: 'get old',
+          }),
+        );
+      }
+    }
   }
 }

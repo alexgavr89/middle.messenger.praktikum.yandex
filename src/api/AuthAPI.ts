@@ -2,24 +2,35 @@ import HTTP from '../modules/http/inedx';
 
 const http = new HTTP('https://ya-praktikum.tech/api/v2/auth');
 
-export interface ILoginRequest {
+export interface LoginRequest {
   login: string;
   password: string;
 }
 
-export interface IRegistrationRequest {
-  first_name: 'string';
-  second_name: 'string';
-  phone: 'string';
-  login: 'string';
-  email: 'string';
-  password: 'string';
-  password_confirm: 'string';
+export interface RegistrationRequest {
+  first_name: string;
+  second_name: string;
+  phone: string;
+  login: string;
+  email: string;
+  password: string;
+  password_confirm: string;
+}
+
+export interface IUser {
+  id: number,
+  first_name: string,
+  second_name: string,
+  display_name: string,
+  login: string,
+  email: string,
+  phone: string,
+  avatar: string
 }
 
 export class AuthAPI {
-  static signin(user: ILoginRequest): Promise<XMLHttpRequest> {
-    return http.post('/signin', { data: user });
+  static signin(loginForm: LoginRequest): Promise<XMLHttpRequest> {
+    return http.post('/signin', { data: { ...loginForm } });
   }
 
   static user(): Promise<XMLHttpRequest> {
@@ -30,7 +41,7 @@ export class AuthAPI {
     return http.post('/logout');
   }
 
-  static signup(user: IRegistrationRequest): Promise<XMLHttpRequest> {
-    return http.post('/signup', { data: user });
+  static signup(user: RegistrationRequest): Promise<XMLHttpRequest> {
+    return http.post('/signup', { data: { ...user } });
   }
 }

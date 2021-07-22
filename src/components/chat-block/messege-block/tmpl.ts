@@ -1,1 +1,5 @@
-export default '<div class="message-block"></div>';
+export default `
+<div class="message-block">
+<l-messages></l-messages>
+</div>
+`;

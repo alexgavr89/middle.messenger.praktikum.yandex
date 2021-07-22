@@ -1,41 +1,66 @@
-import { Block, Props } from '../../../../../modules/block';
+import { Block } from '../../../../../modules/block';
 import Store from '../../../../../modules/store';
 import UserList from './user-list';
 import UserSearchBlock from './user-serch-block';
 
-interface IUserBlockProps extends Props {
+import tmpl from './tmpl';
+
+interface UserBlockProps {
   chatId: number;
-  userList?: UserList;
-  userSearchBlock?: UserSearchBlock;
 }
 
 const store = Store.getInstance();
 
 export default class UserBlock extends Block {
-  constructor(props: IUserBlockProps) {
+  constructor(props: UserBlockProps) {
     super('div', {
-      ...props,
+      block: {
+        ...props,
+      },
+      components: {
+        userSearchBlock: new UserSearchBlock({ chatId: props.chatId }),
+        userList: new UserList({ chatId: props.chatId }),
+      },
+    });
 
-      userList: new UserList({ chatId: props.chatId }),
+    store.addEvent(`show.userBlock.${props.chatId}`, () => {
+      if (store.get(`show.userBlock.${props.chatId}`)) {
+        const userBlocks = store.get('show.userBlock');
 
-      userSearchBlock: new UserSearchBlock({ chatId: props.chatId }),
+        if (typeof userBlocks === 'object' && userBlocks !== null && !Array.isArray(userBlocks)) {
+          for (const [key, value] of Object.entries(userBlocks)) {
+            if (Number(key) !== props.chatId && value) {
+              store.setProps({
+                show: {
+                  userBlock: {
+                    [key]: false,
+                  },
+                },
+              });
+            }
+          }
+
+          this.display('block');
+        }
+      } else {
+        this.display('none');
+      }
     });
   }
 
   mounted(): void {
-    store.registerEvent(`chatUsers_${this.props.chatId}`, (users) => {
-      this.props.userList.setProps({ list: users, chatId: this.props.chatId });
+    this.display('none');
 
-      this.hidden(false);
+    store.setProps({
+      show: {
+        userBlock: {
+          [`${this.props.block?.chatId}`]: false,
+        },
+      },
     });
-
-    this.hidden(true);
   }
 
-  update(): void {
-    const { userList, userSearchBlock } = this.props;
-
-    this.element.append(userList.getContent());
-    this.element.append(userSearchBlock.getContent());
+  render(): string {
+    return tmpl;
   }
 }

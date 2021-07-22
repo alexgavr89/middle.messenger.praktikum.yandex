@@ -1,1 +1,3 @@
-export default '<p class="message__content"> {{content}} </p>';
+export default `
+<p class="message__content"> {{ content }} </p>
+`;

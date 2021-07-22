@@ -1,66 +1,69 @@
-import Handlebars from 'handlebars';
-import { Block, Props } from '../../../modules/block';
+import { Block } from '../../../modules/block';
 import ButtonIcon from '../../button-icon';
 import WebSocketController from '../../../controllers/WebSocketController';
-import tmpl from './tmpl';
+import Store from '../../../modules/store';
 
+import tmpl from './tmpl';
 import './style.scss';
 
-interface ISendBlockProps extends Props {
-  textareaValue?: string;
-  btnAdd?: ButtonIcon;
-  btnSmile?: ButtonIcon;
-  btnSend?: ButtonIcon;
-}
+const store = Store.getInstance();
 
 export default class SendBlock extends Block {
-  constructor(props?: ISendBlockProps) {
-    super('div', {
-      ...props,
+  private ws: WebSocketController | undefined;
 
-      btnAdd: new ButtonIcon({
-        iconClass: 'fas fa-paperclip',
-        stylesWrap: ['button-icon'],
-      }),
-
-      btnSmile: new ButtonIcon({
-        iconClass: 'far fa-smile',
-        stylesWrap: ['button-icon'],
-      }),
-
-      btnSend: new ButtonIcon({
-        iconClass: 'fas fa-paper-plane',
-        stylesWrap: ['button-icon'],
-        events: {
-          click: () => {
-            WebSocketController.send(this.props.textareaValue);
-
-            this.setProps({});
-            this.props.textareaValue = null;
-          },
-        },
-      }),
-
+  constructor() {
+    super('form', {
+      attributes: {
+        class: ['send-block'],
+      },
       events: {
-        change: (event) => {
-          this.props.textareaValue = event.target.value;
+        submit: (event) => {
+          event.preventDefault();
+
+          if (event.target === null || !(event.target instanceof HTMLFormElement)) {
+            throw new Error(`${event} error`);
+          }
+
+          const { message } = event.target.elements;
+
+          if (this.ws) {
+            this.ws.send(message.value);
+          }
+
+          message.value = '';
         },
       },
+      components: {
+        btnAdd: new ButtonIcon({
+          block: {
+            iconClass: 'fas fa-paperclip',
+          },
+        }),
+        btnSmile: new ButtonIcon({
+          block: {
+            iconClass: 'far fa-smile',
+          },
+        }),
+        btnSend: new ButtonIcon({
+          block: {
+            iconClass: 'fas fa-paper-plane',
+          },
+        }),
+      },
+    });
 
-      stylesWrap: ['send-block'],
+    store.addEvent('event.click.chat', () => {
+      const chatId = store.get('event.click.chat');
+
+      if (typeof chatId === 'number') {
+        this.ws = new WebSocketController(chatId);
+      }
     });
   }
 
-  compile(): string {
-    const sendBlock = Handlebars.compile(tmpl);
+  mounted(): void {}
 
-    return sendBlock(this.props);
-  }
-
-  update(): void {
-    const tools = this.element.querySelector('.send-block__tools');
-    tools.append(this.props.btnAdd.getContent());
-    tools.append(this.props.btnSmile.getContent());
-    tools.append(this.props.btnSend.getContent());
+  render(): string {
+    return tmpl;
   }
 }

@@ -1,55 +1,54 @@
-import Handlebars from 'handlebars';
-import { Block, Props } from '../../../../../modules/block';
+import { Block } from '../../../../../modules/block';
 import { Input } from '../../../../input-block/input';
 import Button from '../../../../button';
 import UserController from '../../../../../controllers/UserController';
+
 import tmpl from './tmpl';
 
 export default class AvaratForm extends Block {
-  constructor(props?: Props) {
-    super('div', {
-      ...props,
-
-      avatar: new Input({
-        id: 'avatar',
-        name: 'avatar',
-        type: 'file',
-        placeholder: 'Аватар',
-        stylesWrap: ['input-block'],
-      }),
-
-      button: new Button({
-        title: 'Изменить аватар',
-        type: 'submit',
-        class: 'btn__form',
-        stylesWrap: ['btn'],
-      }),
-
+  constructor() {
+    super('form', {
+      attributes: {
+        class: ['change-form'],
+      },
+      components: {
+        avatar: new Input({
+          attributes: {
+            name: 'avatar',
+            type: 'file',
+            placeholder: 'Аватар',
+          },
+        }),
+        button: new Button({
+          block: {
+            title: 'Изменить аватар',
+            type: 'submit',
+            class: 'btn__form',
+          },
+        }),
+      },
       events: {
         submit: (event) => {
           event.preventDefault();
 
-          const form = this.element.querySelector('form');
+          if (event.target === null || !(event.target instanceof HTMLFormElement)) {
+            throw new Error(`${event} error`);
+          }
 
-          UserController.changeAvatar(form);
+          const form = event.target;
+
+          if (form instanceof HTMLFormElement) {
+            UserController.changeAvatar(form);
+          }
         },
       },
 
-      stylesWrap: ['change-form'],
     });
   }
 
-  compile(): string {
-    const avatarForm = Handlebars.compile(tmpl);
+  mounted(): void {}
 
-    return avatarForm(this.props);
-  }
-
-  update(): void {
-    const form = this.element.querySelector('form');
-    const { avatar, button } = this.props;
-
-    form.append(avatar.getContent());
-    form.append(button.getContent());
+  render(): string {
+    return tmpl;
   }
 }

@@ -1,7 +1,5 @@
-import 'regenerator-runtime/runtime';
 import ChatAPI from '../api/ChatAPI';
 import Store from '../modules/store';
-import { Block } from '../modules/block';
 import Validate from '../utils/validate';
 import Router from '../modules/router';
 
@@ -12,7 +10,7 @@ export default class ChatController {
   static get(): void {
     ChatAPI.get()
       .then((result) => {
-        store.setProps({ chats: JSON.parse(result.response) });
+        store.setProps({ chats: JSON.parse(result.response).reverse() });
 
         return true;
       })
@@ -21,11 +19,9 @@ export default class ChatController {
       });
   }
 
-  static crete(block: Block): void {
-    const input = store.props.addChatInput as string;
-
-    if (Validate.isNotEmpty(input)) {
-      ChatAPI.create(input)
+  static create(title: string): void {
+    if (Validate.isNotEmpty(title)) {
+      ChatAPI.create(title)
         .then((result) => {
           if (result.status === 200) {
             ChatController.get();
@@ -37,7 +33,5 @@ export default class ChatController {
           router.go('/server-error');
         });
     }
-
-    block.props.title.setProps({});
   }
 }

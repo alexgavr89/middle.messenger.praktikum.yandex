@@ -1,0 +1,12 @@
+.husky
+.git/
+node_modules/
+dist/
+.dockerignore
+.eslintignore
+.eslintrc.js
+.gitignore
+.nvmrc
+.stylelintrc.js
+Dockerfile
+jsdom-setup.js

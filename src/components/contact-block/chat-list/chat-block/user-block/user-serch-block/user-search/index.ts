@@ -1,54 +1,61 @@
-import { v4 as makeUUID } from 'uuid';
-import { Block, Props } from '../../../../../../../modules/block';
+import { Block } from '../../../../../../../modules/block';
 import ButtonIcon from '../../../../../../button-icon';
 import { Input } from '../../../../../../input-block/input';
 import UserController from '../../../../../../../controllers/UserController';
-import Store from '../../../../../../../modules/store';
 
+import tmpl from './tmpl';
 import './style.scss';
 
-const store = Store.getInstance();
-
-interface IUserSearchProps extends Props {
+interface UserSearchProps {
   chatId: number;
 }
 
+interface SearchFilds extends HTMLFormControlsCollection {
+  login: { value: string };
+}
+
 export default class UserSearch extends Block {
-  constructor(props: IUserSearchProps) {
-    super('div', {
-      ...props,
+  constructor(props: UserSearchProps) {
+    super('form', {
+      block: {
+        chatId: props.chatId,
+      },
+      attributes: {
+        class: ['user-search'],
+      },
+      events: {
+        submit: (event) => {
+          event.preventDefault();
 
-      title: new Input({
-        id: makeUUID(),
-        name: 'userSearchInput',
-        type: 'text',
-        placeholder: 'Поиск контактов',
-        stylesWrap: ['input-block'],
-        events: {
-          change: (event) => {
-            store.setProps({ searchUserInput: event.target.value });
-          },
+          if (event.target === null || !(event.target instanceof HTMLFormElement)) {
+            throw new Error(`${event} error`);
+          }
+
+          const { login } = event.target.elements as SearchFilds;
+
+          UserController.search(props.chatId, login.value);
         },
-      }),
-
-      btn: new ButtonIcon({
-        iconClass: 'fas fa-search',
-        stylesWrap: ['button-icon'],
-        events: {
-          click: () => {
-            UserController.search(this.props.chatId);
+      },
+      components: {
+        input: new Input({
+          attributes: {
+            name: 'login',
+            type: 'text',
+            placeholder: 'Поиск контактов',
           },
-        },
-      }),
-
-      stylesWrap: ['user-search'],
+        }),
+        btn: new ButtonIcon({
+          block: {
+            iconClass: 'fas fa-search',
+          },
+        }),
+      },
     });
   }
 
-  update(): void {
-    const { title, btn } = this.props;
+  mounted(): void {}
 
-    this.element.append(title.getContent());
-    this.element.append(btn.getContent());
+  render(): string {
+    return tmpl;
   }
 }

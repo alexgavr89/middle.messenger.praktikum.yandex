@@ -1,15 +1,24 @@
-import 'regenerator-runtime/runtime';
-import { Block } from '../modules/block';
 import Router from '../modules/router';
-import { AuthAPI, IRegistrationRequest } from '../api/AuthAPI';
+import { AuthAPI, RegistrationRequest } from '../api/AuthAPI';
 import Store from '../modules/store';
 import Validate from '../utils/validate';
+import AuthController from './AuthController';
 
 const router = Router.getInstance();
 const store = Store.getInstance();
 
 export default class RegistrationController {
-  static registration(form: IRegistrationRequest, block: Block): void {
+  static registration(form: RegistrationRequest): void {
+    const {
+      firstName,
+      secondName,
+      phone,
+      login,
+      mail,
+      password,
+      confirmPassword,
+    } = this.props.components;
+
     const checkFirstName = Validate.isNotEmpty(form.first_name);
     const checkSecondName = Validate.isNotEmpty(form.second_name);
     const checkPhone = Validate.isPhone(form.phone);
@@ -19,24 +28,21 @@ export default class RegistrationController {
 
     const validConfirm = Validate.isConfirmPssword(form.password, form.password_confirm);
 
-    const data = Object.keys(form).reduce((acc, key) => {
-      acc[key] = escape(form[key]);
-      return acc;
-    }, {});
-
     if (
-      checkFirstName &&
-      checkSecondName &&
-      checkPhone &&
-      checkLogin &&
-      checkMail &&
-      checkPassword &&
-      validConfirm
+      checkFirstName
+      && checkSecondName
+      && checkPhone
+      && checkLogin
+      && checkMail
+      && checkPassword
+      && validConfirm
     ) {
-      AuthAPI.signup(data)
+      AuthAPI.signup(form)
         .then((result) => {
           if (result.status === 200) {
             store.setProps({ user: JSON.parse(result.response) });
+
+            AuthController.getUser();
 
             router.go('/messenger');
           }
@@ -48,45 +54,45 @@ export default class RegistrationController {
         });
     } else {
       if (checkFirstName) {
-        block.props.firstName.props.error.hide();
+        firstName.props.components.error.clear();
       } else {
-        block.props.firstName.props.error.show();
+        firstName.components.props.error.print('Пожалуйста, укажите имя');
       }
 
       if (checkSecondName) {
-        block.props.secondName.props.error.hide();
+        secondName.props.components.error.clear();
       } else {
-        block.props.secondName.props.error.show();
+        secondName.props.components.error.print('Пожалуйста, укажите фамилию');
       }
 
       if (checkPhone) {
-        block.props.phone.props.error.hide();
+        phone.props.components.error.clear();
       } else {
-        block.props.phone.props.error.show();
+        phone.props.components.error.print('Пожалуйста, укажите номер телефона');
       }
 
       if (checkLogin) {
-        block.props.login.props.error.hide();
+        login.props.components.error.clear();
       } else {
-        block.props.login.props.error.show();
+        login.props.components.error.print('Пожалуйста, укажите логин');
       }
 
       if (checkMail) {
-        block.props.mail.props.error.hide();
+        mail.props.components.error.clear();
       } else {
-        block.props.mail.props.error.show();
+        mail.props.components.error.print('Пожалуйста, укажите почту');
       }
 
       if (checkPassword) {
-        block.props.password.props.error.hide();
+        password.props.components.error.clear();
       } else {
-        block.props.password.props.error.show();
+        password.props.components.error.print('Пожалуйста, укажите пароль длиннее 6 знаков');
       }
 
       if (!validConfirm) {
-        block.props.confirmPassword.props.error.hide();
+        confirmPassword.props.components.error.clear();
       } else {
-        block.props.confirmPassword.props.error.show();
+        confirmPassword.props.components.error.print('Пароли не совпадают');
       }
     }
   }

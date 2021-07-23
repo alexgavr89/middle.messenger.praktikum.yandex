@@ -1,7 +1,7 @@
 import ResourceAPI from '../api/ResorceAPI';
 
 export default class ResourceController {
-  static get(path: string): void {
+  get(path: string): void {
     ResourceAPI.get(path);
   }
 }

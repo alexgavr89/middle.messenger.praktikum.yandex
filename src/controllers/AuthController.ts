@@ -7,57 +7,52 @@ const store = Store.getInstance();
 const router = Router.getInstance();
 
 export default class AuthController {
-  static login(form: LoginRequest): void {
-    const { login, password } = this.props.components;
-
+  login(form: LoginRequest): void {
     const checkLogin = Validate.isNotEmpty(form.login);
     const checkPassword = Validate.isPassword(form.password);
-
-    if (login.props.components.error.get().length > 0) {
-      login.props.components.error.clear();
-    }
-
-    if (password.props.components.error.get().length > 0) {
-      password.props.components.error.clear();
-    }
 
     if (checkLogin && checkPassword) {
       AuthAPI.signin(form)
         .then((result) => {
-          switch (result.status) {
-            case 200:
-              AuthController.getUser();
-              break;
-            case 400:
-              break;
-            case 401:
-              password.props.components.error.print('Неправильный логин или пароль');
-              break;
-            default:
-              break;
+          if (result.status) {
+            this.getUser();
+
+            router.go('/messenger');
           }
 
-          return true;
+          return result;
         })
         .catch(() => {
           router.go('/server-error');
         });
     } else {
-      if (checkLogin) {
-        login.props.components.error.clear();
-      } else {
-        login.props.components.error.print('Пожалуйста, укажите имя');
+      if (!checkLogin) {
+        throw new Error('Пожалуйста, укажите имя');
       }
 
-      if (checkPassword) {
-        password.props.components.error.clear();
-      } else {
-        password.props.components.error.print('Пожалуйста, укажите пароль');
+      if (!checkPassword) {
+        throw new Error('Пожалуйста, укажите пароль');
       }
     }
   }
 
-  static getUser(): void {
+  getUser(): void {
+    AuthAPI.user()
+      .then((result) => {
+        if (result.status === 200) {
+          store.setProps({ user: JSON.parse(result.response) });
+        } else {
+          router.go('/server-error');
+        }
+
+        return result;
+      })
+      .catch(() => {
+        router.go('/server-error');
+      });
+  }
+
+  checkAuth(): void {
     AuthAPI.user()
       .then((result) => {
         if (result.status === 200) {

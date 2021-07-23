@@ -8,13 +8,11 @@ import './style.scss';
 
 const store = Store.getInstance();
 
-type List = {
-  [key: string]: IUser
-};
-
 interface UserSearchListProps {
   chatId: number;
 }
+
+const chatUserController = new ChatUserController();
 
 export default class UserSearchList extends Block {
   constructor(props: UserSearchListProps) {
@@ -28,38 +26,40 @@ export default class UserSearchList extends Block {
       list: {},
     });
 
-    store.addEvent(`users_search_list_${props.chatId}`, () => {
+    store.addEventChange(`users_search_list_${props.chatId}`, () => {
       const listBlock = this.createDocumentElement('div');
-      const list = store.get(`users_search_list_${props.chatId}`) as List;
+      const list = store.get(`users_search_list_${props.chatId}`) as IUser[] | undefined;
 
-      Object.keys(list).forEach((key) => {
-        const userBlock = new User({
-          block: {
-            user: {
-              ...list[key],
+      if (list) {
+        list.map((user) => {
+          const userBlock = new User({
+            block: {
+              user,
+              chatId: props.chatId,
             },
-            chatId: props.chatId,
-          },
-          btn: {
-            iconClass: 'fas fa-user-plus',
-            events: {
-              submit: (event) => {
-                event.preventDefault();
+            btn: {
+              iconClass: 'fas fa-user-plus',
+              events: {
+                submit: (event) => {
+                  event.preventDefault();
 
-                ChatUserController.add(props.chatId, list[key].id);
+                  chatUserController.add(props.chatId, user.id);
 
-                if (this.props.list) {
-                  const { search } = this.props.list;
+                  if (this.props.list) {
+                    const { search } = this.props.list;
 
-                  search.remove();
-                }
+                    search.remove();
+                  }
+                },
               },
             },
-          },
-        });
+          });
 
-        listBlock.append(userBlock.getContent());
-      });
+          listBlock.append(userBlock.getContent());
+
+          return user;
+        });
+      }
 
       this.setProps({
         list: {

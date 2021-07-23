@@ -6,19 +6,10 @@ import AuthController from './AuthController';
 
 const router = Router.getInstance();
 const store = Store.getInstance();
+const authController = new AuthController();
 
 export default class RegistrationController {
-  static registration(form: RegistrationRequest): void {
-    const {
-      firstName,
-      secondName,
-      phone,
-      login,
-      mail,
-      password,
-      confirmPassword,
-    } = this.props.components;
-
+  registration(form: RegistrationRequest): void {
     const checkFirstName = Validate.isNotEmpty(form.first_name);
     const checkSecondName = Validate.isNotEmpty(form.second_name);
     const checkPhone = Validate.isPhone(form.phone);
@@ -42,7 +33,7 @@ export default class RegistrationController {
           if (result.status === 200) {
             store.setProps({ user: JSON.parse(result.response) });
 
-            AuthController.getUser();
+            authController.getUser();
 
             router.go('/messenger');
           }
@@ -53,46 +44,32 @@ export default class RegistrationController {
           router.go('/server-error');
         });
     } else {
-      if (checkFirstName) {
-        firstName.props.components.error.clear();
-      } else {
-        firstName.components.props.error.print('Пожалуйста, укажите имя');
+      if (!checkFirstName) {
+        throw new Error('Пожалуйста, укажите имя');
       }
 
-      if (checkSecondName) {
-        secondName.props.components.error.clear();
-      } else {
-        secondName.props.components.error.print('Пожалуйста, укажите фамилию');
+      if (!checkSecondName) {
+        throw new Error('Пожалуйста, укажите фамилию');
       }
 
-      if (checkPhone) {
-        phone.props.components.error.clear();
-      } else {
-        phone.props.components.error.print('Пожалуйста, укажите номер телефона');
+      if (!checkPhone) {
+        throw new Error('Пожалуйста, укажите номер телефона');
       }
 
-      if (checkLogin) {
-        login.props.components.error.clear();
-      } else {
-        login.props.components.error.print('Пожалуйста, укажите логин');
+      if (!checkLogin) {
+        throw new Error('Пожалуйста, укажите логин');
       }
 
-      if (checkMail) {
-        mail.props.components.error.clear();
-      } else {
-        mail.props.components.error.print('Пожалуйста, укажите почту');
+      if (!checkMail) {
+        throw new Error('Пожалуйста, укажите почту');
       }
 
-      if (checkPassword) {
-        password.props.components.error.clear();
-      } else {
-        password.props.components.error.print('Пожалуйста, укажите пароль длиннее 6 знаков');
+      if (!checkPassword) {
+        throw new Error('Пожалуйста, укажите пароль длиннее 6 знаков');
       }
 
       if (!validConfirm) {
-        confirmPassword.props.components.error.clear();
-      } else {
-        confirmPassword.props.components.error.print('Пароли не совпадают');
+        throw new Error('Пароли не совпадают');
       }
     }
   }

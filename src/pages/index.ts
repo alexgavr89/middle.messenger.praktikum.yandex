@@ -8,6 +8,7 @@ import Messenger from './messenger';
 import NotFound from './404';
 import ServerError from './500';
 
+const authController = new AuthController();
 const router = Router.getInstance();
 
 router
@@ -17,4 +18,4 @@ router
   .use('/not-found', NotFound)
   .use('/server-error', ServerError);
 
-AuthController.getUser();
+authController.checkAuth();

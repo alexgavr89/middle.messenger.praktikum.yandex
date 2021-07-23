@@ -7,7 +7,7 @@ const store = Store.getInstance();
 const router = Router.getInstance();
 
 export default class ChatController {
-  static get(): void {
+  get(): void {
     ChatAPI.get()
       .then((result) => {
         store.setProps({ chats: JSON.parse(result.response).reverse() });
@@ -19,12 +19,12 @@ export default class ChatController {
       });
   }
 
-  static create(title: string): void {
+  create(title: string): void {
     if (Validate.isNotEmpty(title)) {
       ChatAPI.create(title)
         .then((result) => {
           if (result.status === 200) {
-            ChatController.get();
+            this.get();
           }
 
           return true;

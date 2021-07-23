@@ -23,7 +23,7 @@ export default class UserBlock extends Block {
       },
     });
 
-    store.addEvent(`show.userBlock.${props.chatId}`, () => {
+    store.addEventChange(`show.userBlock.${props.chatId}`, () => {
       if (store.get(`show.userBlock.${props.chatId}`)) {
         const userBlocks = store.get('show.userBlock');
 

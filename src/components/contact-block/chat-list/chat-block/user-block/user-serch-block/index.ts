@@ -28,7 +28,7 @@ export default class UserSearchBlock extends Block {
     });
 
     if (this.props.block?.chatId) {
-      store.addEvent(`users_${this.props.block.chatId}`, (users) => {
+      store.addEventChange(`users_${this.props.block.chatId}`, (users) => {
         if (this.props.components?.userSearchList) {
           this.props.components.userSearchList.setProps({ list: users });
         }

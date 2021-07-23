@@ -7,11 +7,8 @@ import { IChat } from './chat-block/chat';
 import tmpl from './tmpl';
 import './style.scss';
 
-interface IChatListProps {
-  [key: string]: IChat;
-}
-
 const store = Store.getInstance();
+const chatController = new ChatController();
 
 export default class ChatList extends Block {
   constructor() {
@@ -22,26 +19,30 @@ export default class ChatList extends Block {
       list: {},
     });
 
-    store.addEvent('chats', () => {
+    store.addEventChange('chats', () => {
       const listBlock = this.createDocumentElement('div');
-      const list = store.get('chats') as IChatListProps;
+      const list = store.get('chats') as IChat[] | undefined;
 
-      Object.keys(list).forEach((key) => {
-        const chatBlock = new ChatBlock({
-          chatProps: {
-            block: {
-              avatar: list[key].avatar,
-              created_by: list[key].created_by,
-              id: list[key].id,
-              last_message: list[key].last_message,
-              title: list[key].title,
-              unread_count: list[key].unread_count,
+      if (list) {
+        list.map((chat) => {
+          const chatBlock = new ChatBlock({
+            chatProps: {
+              block: {
+                avatar: chat.avatar,
+                created_by: chat.created_by,
+                id: chat.id,
+                last_message: chat.last_message,
+                title: chat.title,
+                unread_count: chat.unread_count,
+              },
             },
-          },
-        });
+          });
 
-        listBlock.append(chatBlock.getContent());
-      });
+          listBlock.append(chatBlock.getContent());
+
+          return chat;
+        });
+      }
 
       this.setProps({
         list: {
@@ -50,7 +51,7 @@ export default class ChatList extends Block {
       });
     });
 
-    ChatController.get();
+    chatController.get();
   }
 
   mounted(): void {}

@@ -51,7 +51,7 @@ export default class Store {
     return result;
   }
 
-  addEvent(name: string, callback: <T>(...args: T[]) => void): void {
+  addEventChange(name: string, callback: <T>(...args: T[]) => void): void {
     this.eventBus().on(name, callback);
   }
 

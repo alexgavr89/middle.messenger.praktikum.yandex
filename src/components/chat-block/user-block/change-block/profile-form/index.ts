@@ -2,8 +2,14 @@ import { Block } from '../../../../../modules/block';
 import Button from '../../../../button';
 import InputBlock from '../../../../input-block';
 import UserController from '../../../../../controllers/UserController';
+import Store from '../../../../../modules/store';
+import { IUser } from '../../../../../api/AuthAPI';
+import { InputError } from '../../../../input-block/input-error';
 
 import tmpl from './tmpl';
+
+const store = Store.getInstance();
+const userController = new UserController();
 
 interface ProfileFilds extends HTMLFormControlsCollection {
   firstName: { value: string };
@@ -15,6 +21,8 @@ interface ProfileFilds extends HTMLFormControlsCollection {
 
 export default class ProfileForm extends Block {
   constructor() {
+    const user = store.get('user') as IUser | undefined;
+
     super('form', {
       attributes: {
         class: ['change-form'],
@@ -23,26 +31,30 @@ export default class ProfileForm extends Block {
         submit: (event) => {
           event.preventDefault();
 
-          if (event.target === null || !(event.target instanceof HTMLFormElement)) {
-            throw new Error(`${event} error`);
+          if (event.target !== null && event.target instanceof HTMLFormElement) {
+            const {
+              firstName,
+              secondName,
+              login,
+              phone,
+              mail,
+            } = event.target.elements as ProfileFilds;
+
+            try {
+              userController.changeProfile({
+                first_name: firstName.value,
+                second_name: secondName.value,
+                login: login.value,
+                phone: phone.value,
+                email: mail.value,
+                display_name: `${firstName.value} ${secondName.value}`,
+              });
+            } catch (error) {
+              if (error instanceof Error) {
+                this.showError(error.message);
+              }
+            }
           }
-
-          const {
-            firstName,
-            secondName,
-            login,
-            phone,
-            mail,
-          } = event.target.elements as ProfileFilds;
-
-          UserController.changeProfile.call(this, {
-            first_name: firstName.value,
-            second_name: secondName.value,
-            login: login.value,
-            phone: phone.value,
-            email: mail.value,
-            display_name: `${firstName.value} ${secondName.value}`,
-          });
         },
       },
       components: {
@@ -62,6 +74,7 @@ export default class ProfileForm extends Block {
                 name: 'firstName',
                 type: 'text',
                 placeholder: 'Имя',
+                value: user?.first_name,
               },
             },
             error: {
@@ -87,6 +100,7 @@ export default class ProfileForm extends Block {
                 name: 'secondName',
                 type: 'text',
                 placeholder: 'Фамилия',
+                value: user?.second_name,
               },
             },
             error: {
@@ -112,6 +126,7 @@ export default class ProfileForm extends Block {
                 name: 'phone',
                 type: 'text',
                 placeholder: 'Телефон',
+                value: user?.phone,
               },
             },
             error: {
@@ -137,6 +152,7 @@ export default class ProfileForm extends Block {
                 name: 'login',
                 type: 'text',
                 placeholder: 'Логин',
+                value: user?.login,
               },
             },
             error: {
@@ -162,6 +178,7 @@ export default class ProfileForm extends Block {
                 name: 'mail',
                 type: 'text',
                 placeholder: 'Почта',
+                value: user?.email,
               },
             },
             error: {
@@ -186,5 +203,42 @@ export default class ProfileForm extends Block {
 
   render(): string {
     return tmpl;
+  }
+
+  private showError(text: string) {
+    switch (text) {
+      case 'Пожалуйста, укажите номер телефона':
+        this.showPhoneError(text);
+        break;
+
+      case 'Пожалуйста, укажите почту':
+        this.showEmailError(text);
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  private showPhoneError(text: string) {
+    const { error } = this.props.components?.phone.props.components;
+
+    error.print(text);
+
+    this.clearError(error);
+  }
+
+  private showEmailError(text: string) {
+    const { error } = this.props.components?.mail.props.components;
+
+    error.print(text);
+
+    this.clearError(error);
+  }
+
+  private clearError(blockError: InputError) {
+    setTimeout(() => {
+      blockError.clear();
+    }, 5000);
   }
 }

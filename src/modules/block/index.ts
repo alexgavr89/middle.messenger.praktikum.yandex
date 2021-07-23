@@ -11,7 +11,7 @@ enum EVENTS {
 
 export interface Props {
   block?: {
-    [key: string]: unknown
+    [key: string]: unknown;
   },
   attributes?: {
     [key: string]: string | string[];
@@ -20,10 +20,10 @@ export interface Props {
     [key: string]: (event: Event) => void;
   },
   components?: {
-    [key: string]: Block
+    [key: string]: Block;
   },
   settings?: {
-    [key: string]: unknown
+    [key: string]: unknown;
   },
   list?: {
     [key: string]: HTMLDivElement;

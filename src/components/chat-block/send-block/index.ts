@@ -8,6 +8,10 @@ import './style.scss';
 
 const store = Store.getInstance();
 
+interface ProfileFilds extends HTMLFormControlsCollection {
+  message: { value: string };
+}
+
 export default class SendBlock extends Block {
   private ws: WebSocketController | undefined;
 
@@ -20,17 +24,15 @@ export default class SendBlock extends Block {
         submit: (event) => {
           event.preventDefault();
 
-          if (event.target === null || !(event.target instanceof HTMLFormElement)) {
-            throw new Error(`${event} error`);
+          if (event.target !== null && event.target instanceof HTMLFormElement) {
+            const { message } = event.target.elements as ProfileFilds;
+
+            if (this.ws) {
+              this.ws.send(message.value);
+            }
+
+            message.value = '';
           }
-
-          const { message } = event.target.elements;
-
-          if (this.ws) {
-            this.ws.send(message.value);
-          }
-
-          message.value = '';
         },
       },
       components: {
@@ -52,7 +54,7 @@ export default class SendBlock extends Block {
       },
     });
 
-    store.addEvent('event.click.chat', () => {
+    store.addEventChange('event.click.chat', () => {
       const chatId = store.get('event.click.chat');
 
       if (typeof chatId === 'number') {

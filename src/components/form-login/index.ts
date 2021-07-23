@@ -3,6 +3,7 @@ import { Block } from '../../modules/block';
 import InputBlock from '../input-block';
 import Button from '../button';
 import AuthController from '../../controllers/AuthController';
+import { InputError } from '../input-block/input-error';
 
 import tmpl from './tmpl';
 
@@ -11,6 +12,8 @@ interface LoginFilds extends HTMLFormControlsCollection {
   password: { value: string };
 }
 
+const authController = new AuthController();
+
 export default class FormLogin extends Block {
   constructor() {
     super('form', {
@@ -18,16 +21,20 @@ export default class FormLogin extends Block {
         submit: (event) => {
           event.preventDefault();
 
-          if (event.target === null || !(event.target instanceof HTMLFormElement)) {
-            throw new Error(`${event} error`);
+          if (event.target !== null && event.target instanceof HTMLFormElement) {
+            const { login, password } = event.target.elements as LoginFilds;
+
+            try {
+              authController.login({
+                login: login.value,
+                password: password.value,
+              });
+            } catch (error) {
+              if (error instanceof Error) {
+                this.showError(error.message);
+              }
+            }
           }
-
-          const { login, password } = event.target.elements as LoginFilds;
-
-          AuthController.login.call(this, {
-            login: login.value,
-            password: password.value,
-          });
         },
       },
       components: {
@@ -98,5 +105,42 @@ export default class FormLogin extends Block {
     const formLogin = Handlebars.compile(tmpl);
 
     return formLogin({});
+  }
+
+  private showError(text: string) {
+    switch (text) {
+      case 'Пожалуйста, укажите имя':
+        this.showLoginError(text);
+        break;
+
+      case 'Пожалуйста, укажите пароль' || 'Неправильный логин или пароль':
+        this.showPasswordError(text);
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  private showLoginError(text: string) {
+    const { error } = this.props.components?.login.props.components;
+
+    error.print(text);
+
+    this.clearError(error);
+  }
+
+  private showPasswordError(text: string) {
+    const { error } = this.props.components?.password.props.components;
+
+    error.print(text);
+
+    this.clearError(error);
+  }
+
+  private clearError(blockError: InputError) {
+    setTimeout(() => {
+      blockError.clear();
+    }, 5000);
   }
 }

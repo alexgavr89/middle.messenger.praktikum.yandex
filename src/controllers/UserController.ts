@@ -7,7 +7,7 @@ const store = Store.getInstance();
 const router = Router.getInstance();
 
 export default class UserController {
-  static async changeAvatar(form: HTMLFormElement): Promise<void> {
+  async changeAvatar(form: HTMLFormElement): Promise<void> {
     UserAPI.changeAvatar(new FormData(form))
       .then((result) => {
         const response = JSON.parse(result.response);
@@ -25,9 +25,7 @@ export default class UserController {
       });
   }
 
-  static changePassword(form: PasswordProps): void {
-    const { oldPassword, newPassword } = this.props.components;
-
+  changePassword(form: PasswordProps): void {
     const checkOldPassword = Validate.isPassword(form.oldPassword);
     const checkNewPassword = Validate.isNotEqualPasswords(form.oldPassword, form.newPassword);
 
@@ -35,18 +33,16 @@ export default class UserController {
       UserAPI.changePassword(form);
     } else {
       if (!checkOldPassword) {
-        oldPassword.props.error.print('Пожалуйста, укажите пароль длиннее 6 знаков');
+        throw new Error('Error old password');
       }
 
       if (!checkNewPassword) {
-        newPassword.props.error.print('Пожалуйста, укажите пароль длиннее 6 знаков');
+        throw new Error('Error new password');
       }
     }
   }
 
-  static async changeProfile(form: ProfileProps): Promise<void> {
-    const { phone, mail } = this.props.components;
-
+  changeProfile(form: ProfileProps): void {
     const checkPhone = Validate.isPhone(form.phone) || Validate.isEmpty(form.phone);
     const checkMail = Validate.isEmail(form.email) || Validate.isEmpty(form.email);
 
@@ -86,16 +82,16 @@ export default class UserController {
         });
     } else {
       if (!checkPhone) {
-        phone.props.error.print('Пожалуйста, укажите номер телефона');
+        throw new Error('Пожалуйста, укажите номер телефона');
       }
 
       if (!checkMail) {
-        mail.props.error.print('Пожалуйста, укажите почту');
+        throw new Error('Пожалуйста, укажите почту');
       }
     }
   }
 
-  static search(chatId: number, login: string): void {
+  search(chatId: number, login: string): void {
     if (Validate.isNotEmpty(login)) {
       UserAPI.search(login)
         .then((result) => {

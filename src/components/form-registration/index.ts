@@ -3,6 +3,8 @@ import { Block } from '../../modules/block';
 import InputBlock from '../input-block';
 import Button from '../button';
 import RegistrationController from '../../controllers/RegistrationController';
+import { InputError } from '../input-block/input-error';
+
 import tmpl from './tmpl';
 
 interface RegistrationFilds extends HTMLFormControlsCollection {
@@ -15,6 +17,8 @@ interface RegistrationFilds extends HTMLFormControlsCollection {
   confirmPassword: { value: string };
 }
 
+const registrationController = new RegistrationController();
+
 export default class FormRegistration extends Block {
   constructor() {
     super('form', {
@@ -22,29 +26,33 @@ export default class FormRegistration extends Block {
         submit: (event) => {
           event.preventDefault();
 
-          if (event.target === null || !(event.target instanceof HTMLFormElement)) {
-            throw new Error(`${event} error`);
+          if (event.target !== null && event.target instanceof HTMLFormElement) {
+            const {
+              firstName,
+              secondName,
+              phone,
+              login,
+              mail,
+              password,
+              confirmPassword,
+            } = event.target.elements as RegistrationFilds;
+
+            try {
+              registrationController.registration({
+                first_name: firstName.value,
+                second_name: secondName.value,
+                phone: phone.value,
+                login: login.value,
+                email: mail.value,
+                password: password.value,
+                password_confirm: confirmPassword.value,
+              });
+            } catch (error) {
+              if (error instanceof Error) {
+                this.showError(error.message);
+              }
+            }
           }
-
-          const {
-            firstName,
-            secondName,
-            phone,
-            login,
-            mail,
-            password,
-            confirmPassword,
-          } = event.target.elements as RegistrationFilds;
-
-          RegistrationController.registration.call(this, {
-            first_name: firstName.value,
-            second_name: secondName.value,
-            phone: phone.value,
-            login: login.value,
-            email: mail.value,
-            password: password.value,
-            password_confirm: confirmPassword.value,
-          });
         },
       },
       components: {
@@ -240,5 +248,102 @@ export default class FormRegistration extends Block {
     const formRegistration = Handlebars.compile(tmpl);
 
     return formRegistration({});
+  }
+
+  private showError(text: string) {
+    switch (text) {
+      case 'Пожалуйста, укажите имя':
+        this.showFirstNameError(text);
+        break;
+
+      case 'Пожалуйста, укажите фамилию':
+        this.showSecondNameError(text);
+        break;
+
+      case 'Пожалуйста, укажите номер телефона':
+        this.showPhoneError(text);
+        break;
+
+      case 'Пожалуйста, укажите логин':
+        this.showLoginError(text);
+        break;
+
+      case 'Пожалуйста, укажите почту':
+        this.showMailError(text);
+        break;
+
+      case 'Пожалуйста, укажите пароль длиннее 6 знаков':
+        this.showPasswordError(text);
+        break;
+
+      case 'Пароли не совпадают':
+        this.showConfirmPasswordError(text);
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  private showFirstNameError(text: string) {
+    const { error } = this.props.components?.firstName.props.components;
+
+    error.print(text);
+
+    this.clearError(error);
+  }
+
+  private showSecondNameError(text: string) {
+    const { error } = this.props.components?.secondName.props.components;
+
+    error.print(text);
+
+    this.clearError(error);
+  }
+
+  private showPhoneError(text: string) {
+    const { error } = this.props.components?.phone.props.components;
+
+    error.print(text);
+
+    this.clearError(error);
+  }
+
+  private showLoginError(text: string) {
+    const { error } = this.props.components?.login.props.components;
+
+    error.print(text);
+
+    this.clearError(error);
+  }
+
+  private showMailError(text: string) {
+    const { error } = this.props.components?.mail.props.components;
+
+    error.print(text);
+
+    this.clearError(error);
+  }
+
+  private showPasswordError(text: string) {
+    const { error } = this.props.components?.password.props.components;
+
+    error.print(text);
+
+    this.clearError(error);
+  }
+
+  private showConfirmPasswordError(text: string) {
+    const { error } = this.props.components?.confirmPassword.props.components;
+
+    error.print(text);
+
+    this.clearError(error);
+  }
+
+  private clearError(blockError: InputError) {
+    setTimeout(() => {
+      blockError.clear();
+    }, 5000);
   }
 }

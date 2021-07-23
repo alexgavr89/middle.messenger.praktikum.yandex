@@ -10,7 +10,7 @@ type Indexed<T = unknown> = {
 };
 
 export default class ChatUserController {
-  static get(chatId: number): void {
+  get(chatId: number): void {
     ChatUserAPI.get(chatId)
       .then((result) => {
         const users = JSON.parse(result.response);
@@ -26,11 +26,11 @@ export default class ChatUserController {
       });
   }
 
-  static remove(chatId: number, userId: number): void {
+  remove(chatId: number, userId: number): void {
     ChatUserAPI.remove(chatId, userId)
       .then((result) => {
         if (result.status === 200) {
-          ChatUserController.get(chatId);
+          this.get(chatId);
         }
 
         return true;
@@ -40,11 +40,11 @@ export default class ChatUserController {
       });
   }
 
-  static add(chatId: number, userId: number): void {
+  add(chatId: number, userId: number): void {
     ChatUserAPI.add(chatId, userId)
       .then((result) => {
         if (result.status === 200) {
-          ChatUserController.get(chatId);
+          this.get(chatId);
         }
 
         return true;

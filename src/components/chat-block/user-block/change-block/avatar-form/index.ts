@@ -5,6 +5,8 @@ import UserController from '../../../../../controllers/UserController';
 
 import tmpl from './tmpl';
 
+const userController = new UserController();
+
 export default class AvaratForm extends Block {
   constructor() {
     super('form', {
@@ -31,14 +33,12 @@ export default class AvaratForm extends Block {
         submit: (event) => {
           event.preventDefault();
 
-          if (event.target === null || !(event.target instanceof HTMLFormElement)) {
-            throw new Error(`${event} error`);
-          }
+          if (event.target !== null && event.target instanceof HTMLFormElement) {
+            const form = event.target;
 
-          const form = event.target;
-
-          if (form instanceof HTMLFormElement) {
-            UserController.changeAvatar(form);
+            if (form instanceof HTMLFormElement) {
+              userController.changeAvatar(form);
+            }
           }
         },
       },

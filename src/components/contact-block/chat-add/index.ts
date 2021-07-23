@@ -10,6 +10,8 @@ interface ChatAddFilds extends HTMLFormControlsCollection {
   title: { value: string };
 }
 
+const chatController = new ChatController();
+
 export default class ChatAdd extends Block {
   constructor() {
     super('form', {
@@ -20,15 +22,13 @@ export default class ChatAdd extends Block {
         submit: (event) => {
           event.preventDefault();
 
-          if (event.target === null || !(event.target instanceof HTMLFormElement)) {
-            throw new Error(`${event} error`);
+          if (event.target !== null && event.target instanceof HTMLFormElement) {
+            const { title } = event.target.elements as ChatAddFilds;
+
+            chatController.create(title.value);
+
+            title.value = '';
           }
-
-          const { title } = event.target.elements as ChatAddFilds;
-
-          ChatController.create(title.value);
-
-          title.value = '';
         },
       },
       components: {

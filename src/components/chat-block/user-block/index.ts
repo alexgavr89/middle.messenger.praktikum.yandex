@@ -9,6 +9,7 @@ import tmpl from './tmpl';
 import './style.scss';
 
 const store = Store.getInstance();
+const logoutController = new LogoutController();
 
 export default class UserBlock extends Block {
   constructor() {
@@ -40,7 +41,7 @@ export default class UserBlock extends Block {
           },
           events: {
             click: () => {
-              LogoutController.logout();
+              logoutController.logout();
             },
           },
         }),
@@ -48,7 +49,7 @@ export default class UserBlock extends Block {
       },
     });
 
-    store.addEvent('user.avatar', (): void => {
+    store.addEventChange('user.avatar', (): void => {
       if (this.props.components) {
         this.props.components.avatarUser.setProps({
           block: {

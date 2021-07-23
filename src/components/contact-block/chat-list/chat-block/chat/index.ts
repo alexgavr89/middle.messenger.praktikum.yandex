@@ -37,6 +37,8 @@ interface LastMessage {
   time: string;
 }
 
+const chatUserController = new ChatUserController();
+
 export class Chat extends Block {
   constructor(props: ChatProps) {
     if (props.block.unread_count === 0) {
@@ -74,7 +76,7 @@ export class Chat extends Block {
           });
 
           if (typeof this.props.block?.id === 'number') {
-            ChatUserController.get(this.props.block.id);
+            chatUserController.get(this.props.block.id);
           }
         },
       },

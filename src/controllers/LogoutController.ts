@@ -4,7 +4,7 @@ import { AuthAPI } from '../api/AuthAPI';
 const router = Router.getInstance();
 
 export default class LogoutController {
-  static logout(): void {
+  logout(): void {
     AuthAPI.logout()
       .then((result) => {
         if (result.status === 200) {

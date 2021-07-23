@@ -32,7 +32,7 @@ export default class Avatar extends Block {
     });
   }
 
-  private createPath(value: string | null | undefined): string {
+  private createPath(value?: string | null): string {
     if (value) {
       return `https://ya-praktikum.tech/api/v2/resources/${value}`;
     }

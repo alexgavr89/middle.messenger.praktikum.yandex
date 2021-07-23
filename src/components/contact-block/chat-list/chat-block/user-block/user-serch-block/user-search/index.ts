@@ -14,6 +14,8 @@ interface SearchFilds extends HTMLFormControlsCollection {
   login: { value: string };
 }
 
+const userController = new UserController();
+
 export default class UserSearch extends Block {
   constructor(props: UserSearchProps) {
     super('form', {
@@ -27,13 +29,11 @@ export default class UserSearch extends Block {
         submit: (event) => {
           event.preventDefault();
 
-          if (event.target === null || !(event.target instanceof HTMLFormElement)) {
-            throw new Error(`${event} error`);
+          if (event.target !== null && event.target instanceof HTMLFormElement) {
+            const { login } = event.target.elements as SearchFilds;
+
+            userController.search(props.chatId, login.value);
           }
-
-          const { login } = event.target.elements as SearchFilds;
-
-          UserController.search(props.chatId, login.value);
         },
       },
       components: {

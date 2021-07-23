@@ -4,10 +4,11 @@ import './stype.scss';
 
 export interface InputProps {
   attributes: {
-    id?: string;
     name: string;
     type: string;
     placeholder: string;
+    id?: string;
+    value?: string;
   },
   events?: {
     [key: string]: (event: Event) => void;

@@ -5,10 +5,6 @@ import { Message, IMessage } from './message';
 import tmpl from './tmpl';
 import './style.scss';
 
-type List = {
-  [key: string]: IMessage
-};
-
 const store = Store.getInstance();
 
 export default class MessageBlock extends Block {
@@ -17,17 +13,21 @@ export default class MessageBlock extends Block {
       list: {},
     });
 
-    store.addEvent('messages', () => {
+    store.addEventChange('messages', () => {
       const listBlock = this.createDocumentElement('div');
-      const list = store.get('messages') as List;
+      const list = store.get('messages') as IMessage[] | undefined;
 
-      Object.keys(list).forEach((key) => {
-        const message = new Message({
-          ...list[key],
+      if (list) {
+        list.map((message) => {
+          const messageBlock = new Message({
+            ...message,
+          });
+
+          listBlock.append(messageBlock.getContent());
+
+          return message;
         });
-
-        listBlock.append(message.getContent());
-      });
+      }
 
       this.setProps({
         list: {

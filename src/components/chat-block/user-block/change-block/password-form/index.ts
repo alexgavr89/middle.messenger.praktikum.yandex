@@ -2,6 +2,7 @@ import { Block } from '../../../../../modules/block';
 import Button from '../../../../button';
 import InputBlock from '../../../../input-block';
 import UserController from '../../../../../controllers/UserController';
+import { InputError } from '../../../../input-block/input-error';
 
 import tmpl from './tmpl';
 
@@ -9,6 +10,8 @@ interface ProfileFilds extends HTMLFormControlsCollection {
   oldPassword: { value: string };
   newPassword: { value: string };
 }
+
+const userController = new UserController();
 
 export default class PasswordForm extends Block {
   constructor() {
@@ -20,16 +23,20 @@ export default class PasswordForm extends Block {
         submit: (event) => {
           event.preventDefault();
 
-          if (event.target === null || !(event.target instanceof HTMLFormElement)) {
-            throw new Error(`${event} error`);
+          if (event.target !== null && event.target instanceof HTMLFormElement) {
+            const { oldPassword, newPassword } = event.target.elements as ProfileFilds;
+
+            try {
+              userController.changePassword({
+                oldPassword: oldPassword.value,
+                newPassword: newPassword.value,
+              });
+            } catch (error) {
+              if (error instanceof Error) {
+                this.showError(error.message);
+              }
+            }
           }
-
-          const { oldPassword, newPassword } = event.target.elements as ProfileFilds;
-
-          UserController.changePassword.call(this, {
-            oldPassword: oldPassword.value,
-            newPassword: newPassword.value,
-          });
         },
       },
       components: {
@@ -98,5 +105,42 @@ export default class PasswordForm extends Block {
 
   render(): string {
     return tmpl;
+  }
+
+  private showError(text: string) {
+    switch (text) {
+      case 'Error old password':
+        this.showOldPasswordError('Пожалуйста, укажите пароль длиннее 6 знаков');
+        break;
+
+      case 'Error new password':
+        this.showNewPasswordError('Пожалуйста, укажите пароль длиннее 6 знаков');
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  private showOldPasswordError(text: string) {
+    const { error } = this.props.components?.oldPassword.props.components;
+
+    error.print(text);
+
+    this.clearError(error);
+  }
+
+  private showNewPasswordError(text: string) {
+    const { error } = this.props.components?.newPassword.props.components;
+
+    error.print(text);
+
+    this.clearError(error);
+  }
+
+  private clearError(blockError: InputError) {
+    setTimeout(() => {
+      blockError.clear();
+    }, 5000);
   }
 }

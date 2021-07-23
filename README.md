@@ -12,7 +12,7 @@
 
 ## Cсылка на Heroku
 
-(https://rocky-river-71978.herokuapp.com/messenger)
+[heroku](https://sleepy-ridge-46547.herokuapp.com/)
 
 ## Прототипы
 
